@@ -1,0 +1,10 @@
+# Normalize line endings: LF in the repository AND in every working copy, regardless of
+# each developer's core.autocrlf setting. Keeps Prettier/.editorconfig (LF) happy on Windows.
+* text=auto eol=lf
+
+# Binary files: never touch
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff binary
+*.woff2 binary

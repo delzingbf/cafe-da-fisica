@@ -1,0 +1,30 @@
+// Prisma schema — the single source of truth for the database structure.
+// Docs: https://pris.ly/d/prisma-schema
+//
+// After changing this file run `npm run db:migrate` (from the repo root) to
+// create a migration and regenerate the client.
+
+generator client {
+  provider               = "prisma-client"
+  output                 = "../src/generated/prisma"
+  runtime                = "nodejs"
+  moduleFormat           = "esm"
+  generatedFileExtension = "ts"
+  importFileExtension    = "js"
+}
+
+datasource db {
+  provider = "postgresql"
+  // The connection URL lives in prisma.config.ts (read from DATABASE_URL).
+}
+
+// Domain models go below. Example:
+//
+// model User {
+//   id        String   @id @default(uuid())
+//   email     String   @unique
+//   name      String
+//   createdAt DateTime @default(now()) @map("created_at")
+//
+//   @@map("users")
+// }
