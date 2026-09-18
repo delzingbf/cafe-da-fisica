@@ -50,6 +50,24 @@ Tooling: npm workspaces, TypeScript 6, oxlint, Prettier.
 - Node.js 24.15+ (`.nvmrc` → `nvm use`) and npm 11
 - Docker Desktop (for PostgreSQL)
 
+### Recommended VS Code extensions
+
+Optional, but they surface the same checks the scripts run (types, lint, format, tests) directly in the editor.
+
+| Extension    | ID                          | What it adds                                                         |
+| ------------ | --------------------------- | -------------------------------------------------------------------- |
+| Vitest       | `vitest.explorer`           | Testing panel, run/debug a single test, inline results               |
+| Prisma       | `Prisma.prisma`             | Syntax highlighting, formatting and autocomplete for `schema.prisma` |
+| oxc          | `oxc.oxc-vscode`            | oxlint diagnostics as you type                                       |
+| Prettier     | `esbenp.prettier-vscode`    | Format on save with the repo's `.prettierrc`                         |
+| EditorConfig | `EditorConfig.EditorConfig` | Applies `.editorconfig` (indentation, LF line endings)               |
+
+Install them all from a terminal:
+
+```bash
+code --install-extension vitest.explorer --install-extension Prisma.prisma --install-extension oxc.oxc-vscode --install-extension esbenp.prettier-vscode --install-extension EditorConfig.EditorConfig
+```
+
 ## Getting started
 
 ```bash
