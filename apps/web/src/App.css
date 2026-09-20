@@ -1,19 +1,19 @@
 .app {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 0 16px;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 16px;
 }
 
 .app__header {
-  padding: 32px 0 16px;
-  border-bottom: 1px solid var(--color-border);
+    padding: 32px 0 16px;
+    border-bottom: 1px solid var(--color-border);
 }
 
 .app__header h1 {
-  font-size: 2rem;
-  color: var(--color-accent);
+    font-size: 2rem;
+    color: var(--color-accent);
 }
 
 .app__main {
-  padding: 24px 0;
+    padding: 24px 0;
 }

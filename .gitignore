@@ -6,9 +6,6 @@ dist/
 coverage/
 *.tsbuildinfo
 
-# Generated code (re-created by `prisma generate`)
-apps/api/src/generated/
-
 # Environment files — commit only the *.example templates
 .env
 .env.local

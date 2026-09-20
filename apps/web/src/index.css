@@ -1,55 +1,55 @@
 /* Global styles: design tokens, reset and base typography. Component styles live next to components. */
 :root {
-  --color-bg: #faf7f2;
-  --color-surface: #ffffff;
-  --color-text: #2b211c;
-  --color-text-muted: #6f625a;
-  --color-border: #e6ded4;
-  --color-accent: #8a5a3c;
-  --color-ok: #2f7d4f;
-  --color-warn: #b7791f;
-  --color-error: #b3261e;
+    --color-bg: #faf7f2;
+    --color-surface: #ffffff;
+    --color-text: #2b211c;
+    --color-text-muted: #6f625a;
+    --color-border: #e6ded4;
+    --color-accent: #8a5a3c;
+    --color-ok: #2f7d4f;
+    --color-warn: #b7791f;
+    --color-error: #b3261e;
 
-  --font-sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: ui-monospace, Consolas, monospace;
-  --radius: 8px;
+    --font-sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: ui-monospace, Consolas, monospace;
+    --radius: 8px;
 
-  color-scheme: light dark;
-  font: 16px/1.5 var(--font-sans);
-  color: var(--color-text);
-  background: var(--color-bg);
+    color-scheme: light dark;
+    font: 16px/1.5 var(--font-sans);
+    color: var(--color-text);
+    background: var(--color-bg);
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --color-bg: #1b1613;
-    --color-surface: #251f1b;
-    --color-text: #f1eae3;
-    --color-text-muted: #b5a99f;
-    --color-border: #3a312b;
-    --color-accent: #d3a07c;
-  }
+    :root {
+        --color-bg: #1b1613;
+        --color-surface: #251f1b;
+        --color-text: #f1eae3;
+        --color-text-muted: #b5a99f;
+        --color-border: #3a312b;
+        --color-accent: #d3a07c;
+    }
 }
 
 *,
 *::before,
 *::after {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 body {
-  margin: 0;
-  min-height: 100svh;
+    margin: 0;
+    min-height: 100svh;
 }
 
 h1,
 h2,
 h3 {
-  margin: 0;
-  line-height: 1.2;
+    margin: 0;
+    line-height: 1.2;
 }
 
 code {
-  font-family: var(--font-mono);
-  font-size: 0.9em;
+    font-family: var(--font-mono);
+    font-size: 0.9em;
 }

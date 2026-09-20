@@ -3,5 +3,3 @@ dist/
 coverage/
 package-lock.json
 *.tsbuildinfo
-apps/api/src/generated/
-apps/api/prisma/migrations/
