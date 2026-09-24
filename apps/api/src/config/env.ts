@@ -2,12 +2,23 @@ import { z } from 'zod';
 
 // Every environment variable the API reads, with its type and default.
 // Startup fails fast with a readable message if something is missing or malformed.
-const envSchema = z.object({
-    NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
-    PORT: z.coerce.number().int().positive().default(3000),
-    DATABASE_URL: z.url(),
-    CORS_ORIGIN: z.string().default('http://localhost:5173'),
-});
+const envSchema = z
+    .object({
+        NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+        PORT: z.coerce.number().int().positive().default(3000),
+        DATABASE_URL: z.url(),
+        CORS_ORIGIN: z.string().default('http://localhost:5173'),
+        // Resend (https://resend.com). Empty/unset outside production: emails are only logged.
+        RESEND_API_KEY: z
+            .string()
+            .optional()
+            .transform((value) => value || undefined),
+        EMAIL_FROM: z.string().default('Café da Física <onboarding@resend.dev>'),
+    })
+    .refine((env) => env.NODE_ENV !== 'production' || env.RESEND_API_KEY, {
+        message: 'RESEND_API_KEY is required in production',
+        path: ['RESEND_API_KEY'],
+    });
 
 export type Env = z.infer<typeof envSchema>;
 

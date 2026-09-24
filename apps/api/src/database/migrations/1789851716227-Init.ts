@@ -7,7 +7,7 @@ export class Init1789851716227 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(
-            `CREATE TABLE "products" ("id" SERIAL NOT NULL, "name" text NOT NULL, "price" numeric(10,2) NOT NULL, "shown" boolean NOT NULL DEFAULT true, "available" boolean NOT NULL DEFAULT true, "vegan" boolean NOT NULL DEFAULT false, "image_url" text, CONSTRAINT "PK_0806c755e0aca124e67c0cf6d7d" PRIMARY KEY ("id"))`,
+            `CREATE TABLE "products" ("id" SERIAL NOT NULL, "name" text NOT NULL, "price" numeric(10,2) NOT NULL, "shown" boolean NOT NULL DEFAULT true, "available" boolean NOT NULL DEFAULT true, "vegan" boolean NOT NULL DEFAULT false, "image_url" text, CONSTRAINT "CHK_products_price_positive" CHECK ("price" > 0), CONSTRAINT "PK_0806c755e0aca124e67c0cf6d7d" PRIMARY KEY ("id"))`,
         );
 
         await queryRunner.query(
@@ -24,7 +24,7 @@ export class Init1789851716227 implements MigrationInterface {
         );
 
         await queryRunner.query(
-            `CREATE TABLE "order_items" ("order_id" integer NOT NULL, "product_id" integer NOT NULL, "quantity" integer NOT NULL, "unit_price" numeric(10,2) NOT NULL, CONSTRAINT "CHK_order_items_quantity_positive" CHECK ("quantity" > 0), CONSTRAINT "PK_6335813ef19bc35b8d866cc6565" PRIMARY KEY ("order_id", "product_id"))`,
+            `CREATE TABLE "order_items" ("order_id" integer NOT NULL, "product_id" integer NOT NULL, "quantity" integer NOT NULL, "unit_price" numeric(10,2) NOT NULL, CONSTRAINT "CHK_order_items_unit_price_positive" CHECK ("unit_price" > 0), CONSTRAINT "CHK_order_items_quantity_positive" CHECK ("quantity" > 0), CONSTRAINT "PK_6335813ef19bc35b8d866cc6565" PRIMARY KEY ("order_id", "product_id"))`,
         );
 
         await queryRunner.query(

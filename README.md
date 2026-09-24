@@ -25,6 +25,7 @@ Tooling: npm workspaces, TypeScript 6, oxlint, Prettier.
 │   │   │   ├── database/     DatabaseModule, data-source.ts, migrations/, seed.ts
 │   │   │   ├── products/, orders/, admins/, settings/   entities (*.entity.ts)
 │   │   │   ├── health/       GET /api/health
+│   │   │   ├── mail/         MailService (Resend) for transactional emails
 │   │   │   └── common/       filters, guards, interceptors, pipes
 │   │   └── test/             e2e specs (*.e2e-spec.ts) + database test setup
 │   └── web/                  React client → http://localhost:5173
@@ -130,4 +131,6 @@ Run a script in a single workspace with `-w`, e.g. `npm run test:watch -w apps/w
 | `TEST_DATABASE_URL` | `apps/api/.env` | Database for `test:int` / `test:e2e` (Vitest only) |
 | `PORT`              | `apps/api/.env` | API port (default 3000)                            |
 | `CORS_ORIGIN`       | `apps/api/.env` | Allowed browser origin (default the Vite dev URL)  |
+| `RESEND_API_KEY`    | `apps/api/.env` | Resend key; unset → emails are only logged         |
+| `EMAIL_FROM`        | `apps/api/.env` | Sender of outgoing emails                          |
 | `VITE_API_URL`      | `apps/web/.env` | API base URL for the browser (default `/api`)      |

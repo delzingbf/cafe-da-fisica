@@ -3,7 +3,7 @@ Arquivo expondo o uso de IA generativa - Alberto:
 - setup do docker:
   Aprendi como funciona o compose, mas a configuração das demais coisas foram feitas via Claude (boot do banco de dados e demais configurações). Sinto uma dependência bem grande quanto a isso, visto que também foi algo que aprendi para o projeto e não tive tempo de ir a fundo, ainda.
 
-- setup das APIs de teste e formatadores de código:
+- setup das APIs de teste e email e formatadores de código:
   Pedi para o Claude gerar os arquivos de configuração iniciais dessas ferramentas, depois modifiquei as configurações iniciais para adequar essas ferramentas ao projeto.
 
 - transformação de SQL puro para entities de TypeORM para integração com NestJS:

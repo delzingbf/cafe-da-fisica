@@ -1,8 +1,9 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Check, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { decimalTransformer } from '../database/transformers.js';
 import { OrderItem } from '../orders/order-item.entity.js';
 
 @Entity({ name: 'products' })
+@Check('CHK_products_price_positive', '"price" > 0')
 export class Product {
     @PrimaryGeneratedColumn()
     id: number;

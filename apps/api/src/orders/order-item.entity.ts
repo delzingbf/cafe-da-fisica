@@ -7,6 +7,7 @@ import { Order } from './order.entity.js';
 // changes do not rewrite history.
 @Entity({ name: 'order_items' })
 @Check('CHK_order_items_quantity_positive', '"quantity" > 0')
+@Check('CHK_order_items_unit_price_positive', '"unit_price" > 0')
 export class OrderItem {
     @PrimaryColumn({ type: 'integer', name: 'order_id' })
     orderId: number;

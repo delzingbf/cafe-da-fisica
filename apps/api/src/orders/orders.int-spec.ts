@@ -97,6 +97,18 @@ describe('orders schema (integration)', () => {
         );
     });
 
+    it.each([0, -1])('rejects a product price of %p (CHECK)', async (price) => {
+        await expect(createProduct({ price })).rejects.toThrow(/CHK_products_price_positive/);
+    });
+
+    it('rejects a non-positive unit price on an order line (CHECK)', async () => {
+        const coffee = await createProduct();
+
+        await expect(
+            createOrder([{ product: { ...coffee, price: 0 }, quantity: 1 }]),
+        ).rejects.toThrow(/CHK_order_items_unit_price_positive/);
+    });
+
     it.each([
         ['not-an-email', /CHK_orders_customer_email_format/],
         ['Ana@Example.com', /CHK_orders_customer_email_lowercase/],
