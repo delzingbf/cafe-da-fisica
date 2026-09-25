@@ -4,10 +4,10 @@ import { Settings } from '../settings/settings.entity.js';
 import dataSource from './data-source.js';
 
 const products: Partial<Product>[] = [
-    { name: 'Café coado', price: 4.0 },
-    { name: 'Pão de queijo', price: 6.5 },
-    { name: 'Bolo de cenoura', price: 8.0 },
-    { name: 'Cookie de aveia', price: 7.0, vegan: true },
+    { name: 'Café coado', price: 4.0, type: 'coffee' },
+    { name: 'Pão de queijo', price: 6.5, type: 'savory' },
+    { name: 'Bolo de cenoura', price: 8.0, type: 'sweet' },
+    { name: 'Cookie de aveia', price: 7.0, type: 'sweet', vegan: true },
 ];
 
 async function main() {

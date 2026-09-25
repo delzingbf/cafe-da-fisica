@@ -7,7 +7,10 @@ export class Init1789851716227 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(
-            `CREATE TABLE "products" ("id" SERIAL NOT NULL, "name" text NOT NULL, "price" numeric(10,2) NOT NULL, "shown" boolean NOT NULL DEFAULT true, "available" boolean NOT NULL DEFAULT true, "vegan" boolean NOT NULL DEFAULT false, "image_url" text, CONSTRAINT "CHK_products_price_positive" CHECK ("price" > 0), CONSTRAINT "PK_0806c755e0aca124e67c0cf6d7d" PRIMARY KEY ("id"))`,
+            `CREATE TYPE "public"."product_type" AS ENUM('sweet', 'savory', 'coffee', 'other')`,
+        );
+        await queryRunner.query(
+            `CREATE TABLE "products" ("id" SERIAL NOT NULL, "name" text NOT NULL, "price" numeric(10,2) NOT NULL, "shown" boolean NOT NULL DEFAULT true, "available" boolean NOT NULL DEFAULT true, "type" "public"."product_type" NOT NULL DEFAULT 'other', "vegan" boolean NOT NULL DEFAULT false, "image_url" text, CONSTRAINT "CHK_products_price_positive" CHECK ("price" > 0), CONSTRAINT "PK_0806c755e0aca124e67c0cf6d7d" PRIMARY KEY ("id"))`,
         );
 
         await queryRunner.query(
@@ -64,5 +67,6 @@ export class Init1789851716227 implements MigrationInterface {
         await queryRunner.query(`DROP TYPE "public"."order_status"`);
         await queryRunner.query(`DROP TYPE "public"."order_payment_option"`);
         await queryRunner.query(`DROP TABLE "products"`);
+        await queryRunner.query(`DROP TYPE "public"."product_type"`);
     }
 }

@@ -1,3 +1,4 @@
+import { PRODUCT_TYPES, type ProductType } from '@cafe-da-fisica/shared';
 import { Check, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { decimalTransformer } from '../database/transformers.js';
 import { OrderItem } from '../orders/order-item.entity.js';
@@ -21,6 +22,9 @@ export class Product {
     /** Can currently be ordered (e.g. not sold out). */
     @Column({ type: 'boolean', default: true })
     available: boolean;
+
+    @Column({ type: 'enum', enum: PRODUCT_TYPES, enumName: 'product_type', default: 'other' })
+    type: ProductType;
 
     @Column({ type: 'boolean', default: false })
     vegan: boolean;
