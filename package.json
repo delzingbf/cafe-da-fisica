@@ -29,7 +29,8 @@
         "test:int": "npm run test:int -w apps/api",
         "db:generate": "npm run db:generate -w apps/api --",
         "db:revert": "npm run db:revert -w apps/api",
-        "db:status": "npm run db:status -w apps/api"
+        "db:status": "npm run db:status -w apps/api",
+        "email:preview": "npm run email:preview -w apps/api --"
     },
     "devDependencies": {
         "concurrently": "^10.0.5",

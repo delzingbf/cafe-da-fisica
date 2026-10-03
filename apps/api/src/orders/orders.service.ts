@@ -7,7 +7,7 @@ import { OrderEmailsService } from './emails/order-email.service.js';
 import { orderTotal } from './emails/order-email.templates.js';
 import { OrderItem } from './order-item.entity.js';
 import { Order } from './order.entity.js';
-import type { CreateOrderDto } from './orders.dto.ts';
+import type { CreateOrderDto } from './orders.dto.js';
 
 @Injectable()
 export class OrdersService {
@@ -47,7 +47,6 @@ export class OrdersService {
                     Object.assign(new OrderItem(), {
                         productId: item.productId,
                         quantity: item.quantity,
-                        // Price is copied so later price changes do not rewrite this order.
                         unitPrice: productsById.get(item.productId)!.price,
                     }),
                 ),

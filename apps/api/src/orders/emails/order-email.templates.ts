@@ -18,6 +18,32 @@ function escapeHtml(value: string): string {
         .replace(/'/g, '&#39;');
 }
 
+const COLORS = {
+    brand: '#6b4226',
+    brandBackground: '#f9df76',
+    text: '#333333',
+    muted: '#777777',
+};
+
+function layout(content: string): string {
+    return `<!doctype html>
+<html lang="pt-BR">
+<body style="margin:0;padding:0;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+    <tr><td align="left" style="padding:24px 16px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+             style="max-width:560px;background:#ffffff;border:2px solid ${COLORS.brandBackground};border-radius:8px;font-family:Arial,Helvetica,sans-serif;color:${COLORS.text};">
+        <tr><td style="padding:20px 24px;background:${COLORS.brandBackground};border-radius:6px 6px 0 0;font-size:20px;font-weight:bold;color:${COLORS.brand};">
+          Café da Física
+        </td></tr>
+        <tr><td style="padding:24px;font-size:15px;line-height:1.5;">${content}</td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+}
+
 export function orderTotal(order: Order): number {
     return order.items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
 }
@@ -52,7 +78,11 @@ export function newOrderEmail(order: Order): EmailContent {
     return {
         subject: `Novo pedido #${order.id} — ${order.customerName}`,
         text: `Pedido #${order.id} de ${customer}\n\n${details.text}`,
-        html: `<h1>Pedido #${order.id}</h1><p>De ${escapeHtml(customer)}</p>${details.html}`,
+        html: layout(
+            `<h1 style="margin:0 0 8px;font-size:22px;">Pedido #${order.id}</h1>` +
+                `<p style="margin:0 0 16px;color:${COLORS.muted};">De ${escapeHtml(customer)}</p>` +
+                details.html,
+        ),
     };
 }
 
@@ -61,6 +91,9 @@ export function orderConfirmationEmail(order: Order): EmailContent {
     return {
         subject: `Recebemos seu pedido #${order.id}`,
         text: `Olá, ${order.customerName}! Recebemos seu pedido:\n\n${details.text}`,
-        html: `<p>Olá, ${escapeHtml(order.customerName)}! Recebemos seu pedido:</p>${details.html}`,
+        html: layout(
+            `<p style="margin:0 0 16px;">Olá, ${escapeHtml(order.customerName)}! Recebemos seu pedido:</p>` +
+                details.html,
+        ),
     };
 }
