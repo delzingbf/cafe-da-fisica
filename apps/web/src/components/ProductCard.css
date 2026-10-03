@@ -11,12 +11,12 @@ flex-direction: column;    /* Empilha os itens forma de coluna */
 align-items: center;       /* Centraliza os itens horizontalmente no meio da caixa */
 gap: 16px;
 }
-.card-produto {
- font-family: sans-serif;
+.card-titulo {
+  font-family: sans-serif;
   font-size: 14px;
   font-weight: bold;
-  color: #333333;
-  margin: 0;
+  color: #2c1e16 !important;
+  margin: 12px 0;
   text-align: center;
 }
 
@@ -33,11 +33,96 @@ gap: 16px;
 }
 
 .tag-vegano {
-  background-color: #E8F5E9; /* Fundo verde claro */
-  color: #2E7D32;            /* Texto verde escuro para contraste */
-  padding: 4px 12px;         /* Espaçamento interno (4px vertical, 12px horizontal) */
-  border-radius: 999px;      /* Arredonda totalmente as pontas, criando formato de pílula */
-  font-size: 12px;           /* Letra pequena */
-  font-weight: bold;         /* Texto em negrito */
+  background-color: #E8F5E9;
+  color: #2E7D32;
+  padding: 4px 12px;
+  border-radius: 999px;      /*formato de pílula */
+  font-size: 12px;
+  font-weight: bold;
   font-family: sans-serif;
+}
+
+/* O fundo escuro que bloqueia a página inteira e desfoca o fundo */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4); /*40% de transparência */
+  backdrop-filter: blur(8px); /* LINHA QUE DESFOCA O FUNDO */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Garante que fica por cima de tudo */
+}
+
+/*caixa do pop-up */
+.modal-content {
+  background-color: #FFF6EC;
+  padding: 32px;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+
+.botao-fechar {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #666;
+}
+
+.botao-adicionar {
+  background-color: #8b4513;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 16px;
+  transition: background-color 0.2s;
+}
+
+.botao-adicionar:hover {
+  background-color: #6b3410;
+}
+
+
+.modal-preco {
+  font-size: 24px;
+  font-weight: bold;
+  color: #2c1e16;
+  margin: 8px 0;
+}
+
+/* Escurece o título dentro do modal */
+.modal-content h2 {
+  color: #2c1e16;
+  margin: 8px 0 4px 0;
+}
+
+/* Escurece o texto da categoria */
+.modal-tipo {
+  color: #555555;
+  margin: 0;
+}
+
+h3.card-titulo {
+  color: #2c1e16 !important;
 }
