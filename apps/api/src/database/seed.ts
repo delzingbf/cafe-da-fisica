@@ -8,6 +8,7 @@ const products: Partial<Product>[] = [
     { name: 'Pão de queijo', price: 6.5, type: 'savory' },
     { name: 'Bolo de cenoura', price: 8.0, type: 'sweet' },
     { name: 'Cookie de aveia', price: 7.0, type: 'sweet', vegan: true },
+    { name: 'Palha italiana', price: 5.0, type: 'sweet' },
 ];
 
 async function main() {

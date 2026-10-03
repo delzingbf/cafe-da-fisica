@@ -8,3 +8,5 @@ Arquivo expondo o uso de IA generativa - Alberto:
 
 - transformação de SQL puro para entities de TypeORM para integração com NestJS:
   Aprendi a criar tabelas simples em SQL e montei as tabelas para a modelagem de dados do projeto. Depois, pedi para o Claude montar as entities e demais arquivos do TypeORM usando o arquivo .sql criado por mim como base. Aprendi mais ou menos como funciona o TypeORM, mas não tive tempo de explorar mais a fundo seu funcionamento e me sinto dependente de IAs para manipulá-lo, por enquanto. Consigo entender a lógica por traz (até porque aprendi o suficiente sobre banco de dados para usar o básico de SQL puro), mas criar e modificar os arquivos por conta própria ainda é um grande desafio.
+
+- usei para me ajudar a criar o product.module e seus componentes associados, pois nunca era muito familiar com o NestJS, me ajudou bastante a entender o funcionamento da API, que achei muito útil e interessante.
