@@ -3,6 +3,7 @@ import { useProducts } from './hooks/useProducts';
 import { useProductFilters } from './hooks/useProductFilters';
 import { ProductTypePills } from './components/ProductTypePills';
 import { VeganToggleFilter } from './components/VeganToggleFilter';
+import { ProductSearchBar } from './components/ProductSearchBar';
 import { HomePage } from './pages/HomePage';
 
 export default function App() {
@@ -17,6 +18,9 @@ export default function App() {
         veganOnly,
         setSelectedType,
         setVeganOnly,
+        searchInput,
+        setSearchInput,
+        setSearchQuery
     } = useProductFilters(products);
 
     console.log('Filtered products:', filteredProducts);
@@ -29,6 +33,11 @@ export default function App() {
             </header>
             <main className="app__main">
                 <HomePage />
+                <ProductSearchBar
+                    searchInput={searchInput}
+                    onSearchInputChange={setSearchInput}
+                    onSearchQueryChange={setSearchQuery}
+                />
                 <ProductTypePills
                     selectedType={selectedType}
                     onTypeChange={setSelectedType}
