@@ -2,13 +2,11 @@ import type { ProductResponse, ProductType } from '@cafe-da-fisica/shared';
 import { useState } from 'react';
 
 export function useProductFilters(products: ProductResponse[]) {
-    // const products: ProductResponse[] = useProducts().products || [];
     const [selectedType, setSelectedType] = useState<ProductType | null>(null);
     const [veganOnly, setVeganOnly] = useState(false);
 
     const [searchInput, setSearchInput] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
-    // const normalizedQuery = searchQuery.trim().toLowerCase();
     const normalizedQuery = normalizeText(searchQuery.trim());
 
     const filteredProducts: ProductResponse[] = products.filter(

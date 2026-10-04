@@ -1,29 +1,13 @@
 import './App.css';
 import { useProducts } from './hooks/useProducts';
-import { useProductFilters } from './hooks/useProductFilters';
-import { ProductTypePills } from './components/ProductTypePills';
-import { VeganToggleFilter } from './components/VeganToggleFilter';
-import { ProductSearchBar } from './components/ProductSearchBar';
 import { HomePage } from './pages/HomePage';
+import { ProductFilters } from './components/ProductFilters';
 
 export default function App() {
 
     // TEST
     const res = useProducts();
     const products = res.kind === 'ready' ? res.products : [];
-
-    const {
-        filteredProducts,
-        selectedType,
-        veganOnly,
-        setSelectedType,
-        setVeganOnly,
-        searchInput,
-        setSearchInput,
-        setSearchQuery
-    } = useProductFilters(products);
-
-    console.log('Filtered products:', filteredProducts);
 
     
     return (
@@ -33,20 +17,12 @@ export default function App() {
             </header>
             <main className="app__main">
                 <HomePage />
-                <ProductSearchBar
-                    searchInput={searchInput}
-                    onSearchInputChange={setSearchInput}
-                    onSearchQueryChange={setSearchQuery}
-                />
-                <ProductTypePills
-                    selectedType={selectedType}
-                    onTypeChange={setSelectedType}
-                />
-                <VeganToggleFilter
-                    veganOnly={veganOnly}
-                    onVeganChange={setVeganOnly}
-                />
             </main>
+            <div className="app__catalog__filter">
+                <ProductFilters 
+                    products={products}
+                />
+            </div>
         </div>
     );
 }

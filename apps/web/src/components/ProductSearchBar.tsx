@@ -1,6 +1,6 @@
 import './ProductSearchBar.css';
 
-type Props ={
+type Props = {
     searchInput: string;
     onSearchInputChange: (input: string) => void;
     onSearchQueryChange: (query: string) => void;
