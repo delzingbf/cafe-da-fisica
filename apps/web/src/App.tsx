@@ -1,7 +1,27 @@
 import './App.css';
+import { useProducts } from './hooks/useProducts';
+import { useProductFilters } from './hooks/useProductFilters';
+import { ProductTypePills } from './components/ProductTypePills';
+import { VeganToggleFilter } from './components/VeganToggleFilter';
 import { HomePage } from './pages/HomePage';
 
 export default function App() {
+
+    // TEST
+    const res = useProducts();
+    const products = res.kind === 'ready' ? res.products : [];
+
+    const {
+        filteredProducts,
+        selectedType,
+        veganOnly,
+        setSelectedType,
+        setVeganOnly,
+    } = useProductFilters(products);
+
+    console.log('Filtered products:', filteredProducts);
+
+    
     return (
         <div className="app">
             <header className="app__header">
@@ -9,6 +29,14 @@ export default function App() {
             </header>
             <main className="app__main">
                 <HomePage />
+                <ProductTypePills
+                    selectedType={selectedType}
+                    onTypeChange={setSelectedType}
+                />
+                <VeganToggleFilter
+                    veganOnly={veganOnly}
+                    onVeganChange={setVeganOnly}
+                />
             </main>
         </div>
     );
