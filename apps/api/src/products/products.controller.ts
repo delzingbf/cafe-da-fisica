@@ -11,8 +11,6 @@ export class ProductsController {
         this.productsService = productsService;
     }
 
-    // constructor(private readonly productsService: ProductsService) {}
-
     @Get()
     findAll(@Query() params: FindAllParameters): Promise<ProductResponse[]> {
         return this.productsService.findAll(params);
