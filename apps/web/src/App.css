@@ -17,3 +17,16 @@
 .app__main {
     padding: 24px 0;
 }
+
+.catalogo-grid {
+    display: grid;
+
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+    padding: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+
+
+
+}

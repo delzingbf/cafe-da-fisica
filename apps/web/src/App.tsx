@@ -2,6 +2,7 @@ import './App.css';
 import { useProducts } from './hooks/useProducts';
 import { HomePage } from './pages/HomePage';
 import { ProductFilters } from './components/ProductFilters';
+import { CatalogPage } from './pages/CatalogPage';
 
 export default function App() {
 
@@ -16,7 +17,7 @@ export default function App() {
                 <h1>Café da Física</h1>
             </header>
             <main className="app__main">
-                <HomePage />
+                <CatalogPage />
             </main>
             <div className="app__catalog__filter">
                 <ProductFilters 
