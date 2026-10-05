@@ -1,5 +1,4 @@
 import './App.css';
-import { HomePage } from './pages/HomePage';
 import { CatalogPage } from './pages/CatalogPage';
 import { Footer } from './components/Footer';
 
@@ -17,8 +16,8 @@ export default function App() {
             </header>
             <main className="app__main">
                 <CatalogPage />
-                <Footer />
             </main>
+            <Footer />
         </div>
     );
 }

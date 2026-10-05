@@ -16,7 +16,7 @@ const TYPE_LABELS = {
 export function CatalogPage() {
     const res = useProducts(); // pedindo os dados
     const products = res.kind === 'ready' ? res.products : [];
-    
+
     const {
         filteredProducts,
         selectedType,
@@ -43,7 +43,7 @@ export function CatalogPage() {
 
     // PAGINA DOS ITENS
     return (
-        <div className="catalog__filters">
+        <div className="catalog__page">
             <ProductFilters 
                 selectedType={selectedType}
                 veganOnly={veganOnly}
@@ -55,6 +55,11 @@ export function CatalogPage() {
             />
 
             <div className="catalogo-grid">
+                {filteredProducts.length === 0 && (
+                    <p className="catalog__empty" role="status">
+                        Nenhum item correspondente encontrado. Tente outra busca ou altere os filtros.
+                    </p>
+                )}
                 {filteredProducts.map((product) => (
                     <ProductCard
                         key={product.id}
