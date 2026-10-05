@@ -1,27 +1,40 @@
-import type { ProductResponse } from '@cafe-da-fisica/shared';
+import type { ProductType } from '@cafe-da-fisica/shared';
 import { ProductTypePills } from './ProductTypePills';
 import { VeganToggleFilter } from './VeganToggleFilter';
 import { ProductSearchBar } from './ProductSearchBar';
-import { useProductFilters } from '../hooks/useProductFilters';
 
 type Props = {
-    products: ProductResponse[];
+    selectedType: ProductType | null; 
+    veganOnly: boolean;
+    setSelectedType: (type: ProductType | null) => void;
+    setVeganOnly: (veganOnly: boolean) => void;
+    searchInput: string;
+    setSearchInput: (searchInput: string) => void;
+    setSearchQuery: (searchQuery: string) => void;
 };
 
-export function ProductFilters({ products }: Props) {
+export function ProductFilters({ 
+    selectedType, 
+    veganOnly, 
+    setSelectedType, 
+    setVeganOnly, 
+    searchInput, 
+    setSearchInput, 
+    setSearchQuery 
+}: Props) {
     
-    const {
-        filteredProducts,
-        selectedType,
-        veganOnly,
-        setSelectedType,
-        setVeganOnly,
-        searchInput,
-        setSearchInput,
-        setSearchQuery
-    } = useProductFilters(products);
+    // const {
+    //     filteredProducts,
+    //     selectedType,
+    //     veganOnly,
+    //     setSelectedType,
+    //     setVeganOnly,
+    //     searchInput,
+    //     setSearchInput,
+    //     setSearchQuery
+    // } = useProductFilters(products);
 
-    console.log('Filtered products:', filteredProducts);
+    // console.log('Filtered products:', filteredProducts);
 
     return (
         <div className="product__filters">

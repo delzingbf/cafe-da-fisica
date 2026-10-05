@@ -3,6 +3,7 @@ import type { ProductType } from '@cafe-da-fisica/shared';
 import { ProductCard } from '../components/ProductCard';
 import { useProducts } from '../hooks/useProducts';
 import { ProductFilters } from '../components/ProductFilters';
+import { useProductFilters } from '../hooks/useProductFilters';
 
 // DICIONARIO CONVERSÃO PARA PT BR
 const TYPE_LABELS = {
@@ -14,6 +15,18 @@ const TYPE_LABELS = {
 
 export function CatalogPage() {
     const res = useProducts(); // pedindo os dados
+    const products = res.kind === 'ready' ? res.products : [];
+    
+    const {
+        filteredProducts,
+        selectedType,
+        veganOnly,
+        setSelectedType,
+        setVeganOnly,
+        searchInput,
+        setSearchInput,
+        setSearchQuery,
+    } = useProductFilters(products);
 
     if (res.kind === 'loading') {
         return <p role="status">Carregando os produtos…</p>;
@@ -32,17 +45,23 @@ export function CatalogPage() {
     return (
         <div className="catalog__filters">
             <ProductFilters 
-                products={res.products}
+                selectedType={selectedType}
+                veganOnly={veganOnly}
+                setSelectedType={setSelectedType}
+                setVeganOnly={setVeganOnly}
+                searchInput={searchInput}
+                setSearchInput={setSearchInput}
+                setSearchQuery={setSearchQuery}
             />
 
             <div className="catalogo-grid">
-                {res.products.map((product) => (
+                {filteredProducts.map((product) => (
                     <ProductCard
                         key={product.id}
-                        nome={product.name}
-                        preco={product.price}
-                        isVegano={product.vegan}
-                        tipo={TYPE_LABELS[product.type]}
+                        name={product.name}
+                        price={product.price}
+                        isVegan={product.vegan}
+                        type={TYPE_LABELS[product.type]}
                     />
                 ))}
             </div>

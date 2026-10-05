@@ -4,27 +4,27 @@ import './ProductCard.css';
 
 // 'struct do card'
 export interface ProductCardProps {
-  nome: string;
-  isVegano: boolean;
-  tipo: string;
-  preco: number;
+  name: string;
+  isVegan: boolean;
+  type: string;
+  price: number;
   imagemPlaceholder?: string; // ? == opcional
 }
 
 // recebe dados e exporta a interface
-export function ProductCard({nome, isVegano, tipo, preco}: ProductCardProps) {
+export function ProductCard({name, isVegan, type, price}: ProductCardProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     return(
         <>
 
     <div className='card-container' onClick={() => setIsModalOpen(true)}>
-      <h3 className='card-titulo'>{nome}</h3>
+      <h3 className='card-titulo'>{name}</h3>
       {/* AQUI IREMOS COLOCAR A FOTO*/}
       <div className='card-foto'>
         📷
       </div>
 
-      {isVegano && (
+      {isVegan && (
         <span className="tag-vegano">vegano</span>
       )}
 
@@ -39,11 +39,11 @@ export function ProductCard({nome, isVegano, tipo, preco}: ProductCardProps) {
          {/*INFORMACOES SOBRE PRODUTO*/}
 
          <div className ='modal-foto-grande'>📷</div>
-         <h2>{nome}</h2>
-         <p className="modal-tipo">Categoria: {tipo}</p>
-         <p className ="modal-preco">R$ {preco.toFixed(2)}</p>
+         <h2>{name}</h2>
+         <p className="modal-tipo">Categoria: {type}</p>
+         <p className ="modal-preco">R$ {price.toFixed(2)}</p>
 
-         {isVegano && (
+         {isVegan && (
             <span className="tag-vegano">vegano</span>
          )}
 
