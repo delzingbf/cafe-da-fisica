@@ -18,6 +18,7 @@
         "test:e2e": "vitest run --config ./vitest.config.e2e.ts",
         "db:migrate": "npm run typeorm -- migration:run",
         "db:seed": "tsx src/database/seed.ts",
+        "email:preview": "tsx scripts/email-preview.ts",
         "db:reset": "npm run typeorm -- schema:drop && npm run db:migrate && npm run db:seed",
         "test:int": "vitest run --config ./vitest.config.integration.ts",
         "typeorm": "tsx scripts/typeorm.ts",

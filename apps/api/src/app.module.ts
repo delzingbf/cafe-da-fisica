@@ -4,6 +4,7 @@ import { validateEnv } from './config/env.js';
 import { DatabaseModule } from './database/database.module.js';
 import { HealthModule } from './health/health.module.js';
 import { ProductsModule } from './products/products.module.js';
+import { OrdersModule } from './orders/orders.module.js';
 
 @Module({
     imports: [
@@ -11,7 +12,7 @@ import { ProductsModule } from './products/products.module.js';
         DatabaseModule,
         HealthModule,
         ProductsModule,
-        // Feature modules (e.g. ProductsModule, OrdersModule) are registered here.
+        OrdersModule,
     ],
 })
 export class AppModule {}
