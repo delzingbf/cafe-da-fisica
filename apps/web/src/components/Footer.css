@@ -2,9 +2,11 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: 20px;
-    padding: 20px 0 24px;
+    padding: 20px 0 4px;
     border-top: 1px solid var(--color-border);
     color: var(--color-text-muted);
+    margin-top: 80px;
+    font: 15px / 1.5 var(--font-sans);
 }
 
 .app__footer-info {

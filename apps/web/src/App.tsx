@@ -1,15 +1,13 @@
 import './App.css';
-import { useProducts } from './hooks/useProducts';
 import { HomePage } from './pages/HomePage';
-import { ProductFilters } from './components/ProductFilters';
 import { CatalogPage } from './pages/CatalogPage';
 import { Footer } from './components/Footer';
 
 export default function App() {
 
     // TEST
-    const res = useProducts();
-    const products = res.kind === 'ready' ? res.products : [];
+    // const res = useProducts();
+    // const products = res.kind === 'ready' ? res.products : [];
 
     
     return (
@@ -18,12 +16,7 @@ export default function App() {
                 <h1>Café da Física</h1>
             </header>
             <main className="app__main">
-                <ProductFilters 
-                    products={products}
-                />
-
                 <CatalogPage />
-
                 <Footer />
             </main>
         </div>

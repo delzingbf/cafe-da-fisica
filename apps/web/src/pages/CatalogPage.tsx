@@ -2,6 +2,7 @@ import './CatalogPage.css';
 import type { ProductType } from '@cafe-da-fisica/shared';
 import { ProductCard } from '../components/ProductCard';
 import { useProducts } from '../hooks/useProducts';
+import { ProductFilters } from '../components/ProductFilters';
 
 // DICIONARIO CONVERSÃO PARA PT BR
 const TYPE_LABELS = {
@@ -12,33 +13,39 @@ const TYPE_LABELS = {
 } satisfies Record<ProductType, string>;
 
 export function CatalogPage() {
-    const state = useProducts(); // pedindo os dados
+    const res = useProducts(); // pedindo os dados
 
-    if (state.kind === 'loading') {
+    if (res.kind === 'loading') {
         return <p role="status">Carregando os produtos…</p>;
     }
 
-    if (state.kind === 'error') {
+    if (res.kind === 'error') {
         return <p role="alert">Dados dos produtos não carregados.</p>;
     }
 
     // READY GARANTIDO
-    if (state.products.length === 0) {
+    if (res.products.length === 0) {
         return <p>Nenhum produto disponível.</p>;
     }
 
     // PAGINA DOS ITENS
     return (
-        <div className="catalogo-grid">
-            {state.products.map((product) => (
-                <ProductCard
-                    key={product.id}
-                    nome={product.name}
-                    preco={product.price}
-                    isVegano={product.vegan}
-                    tipo={TYPE_LABELS[product.type]}
-                />
-            ))}
+        <div className="catalog__filters">
+            <ProductFilters 
+                products={res.products}
+            />
+
+            <div className="catalogo-grid">
+                {res.products.map((product) => (
+                    <ProductCard
+                        key={product.id}
+                        nome={product.name}
+                        preco={product.price}
+                        isVegano={product.vegan}
+                        tipo={TYPE_LABELS[product.type]}
+                    />
+                ))}
+            </div>
         </div>
     );
 }
