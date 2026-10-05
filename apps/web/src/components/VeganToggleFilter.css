@@ -1,0 +1,72 @@
+.vegan-toggle-filter {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 26px;
+    padding-left: 14px;
+    color: #fff8ee;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.vegan-toggle-filter::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    height: 20px;
+    width: 1px;
+    background: #94715a;
+}
+
+.vegan-toggle-filter__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.vegan-toggle-filter__track {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    width: 28px;
+    height: 16px;
+    padding: 2px;
+    border-radius: 999px;
+    background: #805c49;
+    transition: background-color 150ms ease;
+}
+
+.vegan-toggle-filter__track::after {
+    content: '';
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform 150ms ease;
+}
+
+.vegan-toggle-filter__input:checked + .vegan-toggle-filter__track {
+    background: #65854b;
+}
+
+.vegan-toggle-filter__input:checked + .vegan-toggle-filter__track::after {
+    transform: translateX(12px);
+}
+
+.vegan-toggle-filter__input:focus-visible + .vegan-toggle-filter__track {
+    outline: 2px solid #fff8ee;
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .vegan-toggle-filter__track,
+    .vegan-toggle-filter__track::after {
+        transition: none;
+    }
+}
