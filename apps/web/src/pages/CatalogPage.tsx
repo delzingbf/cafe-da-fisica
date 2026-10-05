@@ -1,3 +1,4 @@
+import './CatalogPage.css';
 import type { ProductType } from '@cafe-da-fisica/shared';
 import { ProductCard } from '../components/ProductCard';
 import { useProducts } from '../hooks/useProducts';
