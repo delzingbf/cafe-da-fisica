@@ -14,7 +14,7 @@ import {
     OneToMany,
     PrimaryGeneratedColumn,
 } from 'typeorm';
-import { EMAIL_CHECKS } from '../database/checks.js';
+import { EMAIL_CHECKS } from '../../infrastructure/database/checks.js';
 import { OrderItem } from './order-item.entity.js';
 
 @Entity({ name: 'orders' })

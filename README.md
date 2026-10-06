@@ -16,33 +16,38 @@ Tooling: npm workspaces, TypeScript 6, oxlint, Prettier.
 ```
 .
 ├── apps/
-│   ├── api/                  NestJS API  → http://localhost:3000/api
-│   │   ├── scripts/typeorm.ts  TypeORM CLI wrapper (tsx)
+│   ├── api/                      NestJS API  → http://localhost:3000/api
+│   │   ├── scripts/              typeorm.ts (TypeORM CLI wrapper), email-preview.ts
 │   │   ├── src/
-│   │   │   ├── main.ts       bootstrap: /api prefix, CORS, validation pipe
-│   │   │   ├── app.module.ts root module — register feature modules here
-│   │   │   ├── config/       env schema + validation (zod)
-│   │   │   ├── database/     DatabaseModule, data-source.ts, migrations/, seed.ts
-│   │   │   ├── products/, orders/, admins/, settings/   entities (*.entity.ts)
-│   │   │   ├── health/       GET /api/health
-│   │   │   ├── mail/         MailService (Resend) for transactional emails
-│   │   │   └── common/       filters, guards, interceptors, pipes
-│   │   └── test/             e2e specs (*.e2e-spec.ts) + database test setup
-│   └── web/                  React client → http://localhost:5173
-│       ├── vite.config.ts    dev proxy /api → :3000, vitest settings
+│   │   │   ├── main.ts           bootstrap: /api prefix, CORS, validation pipe
+│   │   │   ├── app.module.ts     root module — register feature modules here
+│   │   │   ├── domain/           business features (module, controller, service, entities)
+│   │   │   │   ├── products/     GET /api/products
+│   │   │   │   ├── orders/       POST /api/orders; emails/ = order notification emails
+│   │   │   │   ├── settings/     single-row settings entity
+│   │   │   │   └── admins/       admin accounts entity
+│   │   │   ├── infrastructure/   technical support used by the domain
+│   │   │   │   ├── config/       env schema + validation (zod)
+│   │   │   │   ├── database/     DatabaseModule, data-source.ts, migrations/, seed.ts
+│   │   │   │   ├── mail/         MailService (Resend) for transactional emails
+│   │   │   │   └── health/       GET /api/health
+│   │   │   └── common/           filters, guards, interceptors, pipes
+│   │   └── test/                 e2e specs (*.e2e-spec.ts) + database test setup
+│   └── web/                      React client → http://localhost:5173
+│       ├── vite.config.ts        dev proxy /api → :3000, vitest settings
 │       └── src/
-│           ├── api/          typed fetch wrapper
-│           ├── pages/        route-level components (+ tests)
-│           ├── components/   reusable UI
-│           └── hooks/        custom hooks
+│           ├── api/              typed fetch wrapper
+│           ├── pages/            route-level components (+ tests)
+│           ├── components/       reusable UI
+│           └── hooks/            custom hooks
 ├── packages/
-│   └── shared/               @cafe-da-fisica/shared (built to dist/ by tsc)
+│   └── shared/                   @cafe-da-fisica/shared (built to dist/ by tsc)
 ├── db/
-│   ├── init/                 SQL run once when the Postgres volume is created
-│   └── README.md             database workflow
-├── compose.yaml              PostgreSQL service
-├── .env.example              compose variables (copy to .env)
-└── package.json              workspaces + root scripts
+│   ├── init/                     SQL run once when the Postgres volume is created
+│   └── README.md                 database workflow
+├── compose.yaml                  PostgreSQL service
+├── .env.example                  compose variables (copy to .env)
+└── package.json                  workspaces + root scripts
 ```
 
 ## Prerequisites
@@ -101,7 +106,7 @@ Open http://localhost:5173 — the home page calls `GET /api/health` and shows w
 | `npm run db:migrate`        | Apply pending TypeORM migrations                        |
 | `npm run db:generate -- X`  | New migration `X` from entity changes (needs the DB up) |
 | `npm run db:revert`         | Undo the last migration                                 |
-| `npm run db:seed`           | Runs `apps/api/src/database/seed.ts`                    |
+| `npm run db:seed`           | Runs `apps/api/src/infrastructure/database/seed.ts`     |
 | `npm run db:reset`          | Drop schema + migrate + seed (dev only)                 |
 
 Run a script in a single workspace with `-w`, e.g. `npm run test:watch -w apps/web`.
@@ -111,14 +116,14 @@ Run a script in a single workspace with `-w`, e.g. `npm run test:watch -w apps/w
 - **API prefix** — every route is mounted under `/api` (`API_PREFIX` in `packages/shared`).
 - **Dev proxy** — the Vite dev server forwards `/api/*` to `http://localhost:3000`, so the browser never needs CORS in development. In production set `VITE_API_URL` to the deployed API.
 - **Shared package** — `@cafe-da-fisica/shared` holds types and constants both apps import. It is compiled to `dist/` (automatically on `npm install`, and in watch mode during `npm run dev`). Put anything here that must stay in sync between client and server (response shapes, enums, route names).
-- **Database access** — only the API touches PostgreSQL, through TypeORM (`DatabaseModule` opens the connection; feature modules inject repositories with `TypeOrmModule.forFeature`). Entities under `apps/api/src/<feature>/*.entity.ts` are the schema; see [db/README.md](db/README.md) for the migration workflow.
-- **Configuration** — the API validates its environment at startup (`apps/api/src/config/env.ts`) and refuses to boot with a bad config.
+- **Database access** — only the API touches PostgreSQL, through TypeORM (`DatabaseModule` opens the connection; feature modules inject repositories with `TypeOrmModule.forFeature`). Entities under `apps/api/src/domain/<feature>/*.entity.ts` are the schema; see [db/README.md](db/README.md) for the migration workflow.
+- **Configuration** — the API validates its environment at startup (`apps/api/src/infrastructure/config/env.ts`) and refuses to boot with a bad config.
 
 ## Adding a feature (typical flow)
 
-1. Model the data as an entity in `apps/api/src/<feature>/<name>.entity.ts`, register it in `src/database/entities.ts`, then `npm run db:generate -- <Name>` and `npm run db:migrate`.
+1. Model the data as an entity in `apps/api/src/domain/<feature>/<name>.entity.ts`, register it in `src/infrastructure/database/entities.ts`, then `npm run db:generate -- <Name>` and `npm run db:migrate`.
 2. Put the shared contract (DTO/response types) in `packages/shared/src`.
-3. Create a Nest module (`cd apps/api && npx nest g resource <name>`, or by hand under `apps/api/src/<name>`) and register it in `app.module.ts`.
+3. Create a Nest module (`cd apps/api && npx nest g resource <name>`, or by hand under `apps/api/src/domain/<name>`) and register it in `app.module.ts`.
 4. Add a page/component under `apps/web/src` that calls the endpoint through `src/api/client.ts`.
 5. Write unit tests next to the code (`*.spec.ts` in the API, `*.test.tsx` in the web app) and, for anything that depends on the database, an integration test (`*.int-spec.ts`).
 

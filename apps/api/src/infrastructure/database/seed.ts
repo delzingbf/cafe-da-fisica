@@ -1,6 +1,6 @@
 // Populates the database with development data. Run with `npm run db:seed` (idempotent).
-import { Product } from '../products/product.entity.js';
-import { Settings } from '../settings/settings.entity.js';
+import { Product } from '../../domain/products/product.entity.js';
+import { Settings } from '../../domain/settings/settings.entity.js';
 import dataSource from './data-source.js';
 
 const products: Partial<Product>[] = [

@@ -6,8 +6,8 @@ import { Resend } from 'resend';
 import {
     newOrderEmail,
     orderConfirmationEmail,
-} from '../src/orders/emails/order-email.templates.js';
-import type { Order } from '../src/orders/order.entity.js';
+} from '../src/domain/orders/emails/order-email.templates.js';
+import type { Order } from '../src/domain/orders/order.entity.js';
 
 const to = process.argv[2];
 if (!to) throw new Error('Usage: npm run email:preview -- voce@example.com');

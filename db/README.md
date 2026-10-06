@@ -8,9 +8,9 @@ PostgreSQL 17, run locally through Docker (`compose.yaml` at the repository root
 | Credentials / port       | `.env` at the repo root (`.env.example`)              |
 | First-boot SQL scripts   | `db/init/*.sql` (server setup only, e.g. the test DB) |
 | Schema (source of truth) | TypeORM entities: `apps/api/src/**/*.entity.ts`       |
-| Migrations               | `apps/api/src/database/migrations/`                   |
-| CLI data source          | `apps/api/src/database/data-source.ts`                |
-| Seed data                | `apps/api/src/database/seed.ts`                       |
+| Migrations               | `apps/api/src/infrastructure/database/migrations/`    |
+| CLI data source          | `apps/api/src/infrastructure/database/data-source.ts` |
+| Seed data                | `apps/api/src/infrastructure/database/seed.ts`        |
 
 ## Everyday commands (from the repo root)
 
@@ -21,7 +21,7 @@ npm run db:migrate             # apply pending migrations (typeorm migration:run
 npm run db:generate -- AddFoo  # diff entities vs database → new migration file
 npm run db:revert              # undo the last migration
 npm run db:status              # list applied / pending migrations
-npm run db:seed                # run apps/api/src/database/seed.ts (idempotent)
+npm run db:seed                # run apps/api/src/infrastructure/database/seed.ts (idempotent)
 npm run db:reset               # drop everything, migrate and seed (development only!)
 npm run db:down                # stop the container (data is kept in the `pgdata` volume)
 ```
@@ -40,10 +40,10 @@ Both live in `apps/api/.env`. The API only ever reads `DATABASE_URL`; the Vitest
 
 ## Changing the schema
 
-1. Edit or add an entity under `apps/api/src/<feature>/<name>.entity.ts`.
-2. New entity? Add it to the list in `apps/api/src/database/entities.ts`.
+1. Edit or add an entity under `apps/api/src/domain/<feature>/<name>.entity.ts`.
+2. New entity? Add it to the list in `apps/api/src/infrastructure/database/entities.ts`.
 3. With the database running, generate the migration: `npm run db:generate -- <DescriptiveName>`.
-4. Review the generated SQL in `apps/api/src/database/migrations/` — TypeORM does not detect
+4. Review the generated SQL in `apps/api/src/infrastructure/database/migrations/` — TypeORM does not detect
    changes to `CHECK` expressions, so edit those by hand when needed.
 5. Apply it with `npm run db:migrate` and commit the migration together with the entity change.
 

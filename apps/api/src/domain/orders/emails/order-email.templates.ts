@@ -1,5 +1,5 @@
 import type { OrderPaymentOption } from '@cafe-da-fisica/shared';
-import type { MailMessage } from '../../mail/mail.service.js';
+import type { MailMessage } from '../../../infrastructure/mail/mail.service.js';
 import type { Order } from '../order.entity.js';
 
 type EmailContent = Pick<MailMessage, 'subject' | 'html' | 'text'>;

@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import type { Repository } from 'typeorm';
-import { MailService, type MailMessage } from '../../mail/mail.service.js';
+import { MailService, type MailMessage } from '../../../infrastructure/mail/mail.service.js';
 import { Settings } from '../../settings/settings.entity.js';
 import type { Order } from '../order.entity.js';
 import { newOrderEmail, orderConfirmationEmail } from './order-email.templates.js';

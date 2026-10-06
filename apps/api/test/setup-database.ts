@@ -2,7 +2,7 @@
 // Gives each test a clean database: every table is truncated before it runs.
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
-import { buildDataSourceOptions } from '../src/database/typeorm.options.js';
+import { buildDataSourceOptions } from '../src/infrastructure/database/typeorm.options.js';
 import { TEST_DATABASE_URL } from './test-database-url.js';
 
 /** Direct connection to the test database, for assertions that bypass the app. */

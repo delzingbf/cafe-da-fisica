@@ -8,7 +8,7 @@ import {
     UpdateDateColumn,
 } from 'typeorm';
 import { Admin } from '../admins/admin.entity.js';
-import { EMAIL_CHECKS } from '../database/checks.js';
+import { EMAIL_CHECKS } from '../../infrastructure/database/checks.js';
 
 // Single-row table: the primary key is a boolean that must be TRUE, so only one row can exist.
 @Entity({ name: 'settings' })
