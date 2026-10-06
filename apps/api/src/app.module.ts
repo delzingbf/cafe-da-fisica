@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { validateEnv } from './config/env.js';
-import { DatabaseModule } from './database/database.module.js';
-import { HealthModule } from './health/health.module.js';
-import { ProductsModule } from './products/products.module.js';
+import { validateEnv } from './infrastructure/config/env.js';
+import { DatabaseModule } from './infrastructure/database/database.module.js';
+import { HealthModule } from './infrastructure/health/health.module.js';
+import { ProductsModule } from './domain/products/products.module.js';
+import { OrdersModule } from './domain/orders/orders.module.js';
 
 @Module({
     imports: [
@@ -11,7 +12,7 @@ import { ProductsModule } from './products/products.module.js';
         DatabaseModule,
         HealthModule,
         ProductsModule,
-        // Feature modules (e.g. ProductsModule, OrdersModule) are registered here.
+        OrdersModule,
     ],
 })
 export class AppModule {}

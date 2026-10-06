@@ -1,7 +1,7 @@
 // Runs once per Vitest invocation, before any test file: brings the test database up to date.
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
-import { buildDataSourceOptions } from '../src/database/typeorm.options.js';
+import { buildDataSourceOptions } from '../src/infrastructure/database/typeorm.options.js';
 import { TEST_DATABASE_URL } from './test-database-url.js';
 
 export default async function setup() {

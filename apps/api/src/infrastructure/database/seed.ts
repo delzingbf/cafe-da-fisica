@@ -1,6 +1,6 @@
 // Populates the database with development data. Run with `npm run db:seed` (idempotent).
-import { Product } from '../products/product.entity.js';
-import { Settings } from '../settings/settings.entity.js';
+import { Product } from '../../domain/products/product.entity.js';
+import { Settings } from '../../domain/settings/settings.entity.js';
 import dataSource from './data-source.js';
 
 const products: Partial<Product>[] = [
@@ -8,7 +8,12 @@ const products: Partial<Product>[] = [
     { name: 'Pão de queijo', price: 6.5, type: 'savory' },
     { name: 'Bolo de cenoura', price: 8.0, type: 'sweet' },
     { name: 'Cookie de aveia', price: 7.0, type: 'sweet', vegan: true },
-    { name: 'Palha italiana', price: 5.0, type: 'sweet' },
+    { name: 'Palha italiana', price: 3.0, type: 'sweet' },
+    { name: 'Térmica de café (1L)', price: 12.5, type: 'coffee' },
+    { name: 'Brownie', price: 8.0, type: 'sweet' },
+    { name: 'Esfiha', price: 4.5, type: 'savory' },
+    { name: 'Cookie integral', price: 9.0, type: 'sweet' },
+    { name: 'Sanduíche natural', price: 10.0, type: 'savory', vegan: true },
 ];
 
 async function main() {

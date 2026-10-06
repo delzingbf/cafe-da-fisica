@@ -1,5 +1,5 @@
 import { Check, Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
-import { decimalTransformer } from '../database/transformers.js';
+import { decimalTransformer } from '../../infrastructure/database/transformers.js';
 import { Product } from '../products/product.entity.js';
 import { Order } from './order.entity.js';
 

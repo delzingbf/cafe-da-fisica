@@ -1,0 +1,50 @@
+.product-type-pills {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.product-type-pills__pill {
+    --pill-color: #eab366;
+    min-height: 26px;
+    padding: 4px 14px;
+    border: 1px solid var(--pill-color);
+    border-radius: 999px;
+    background: transparent;
+    color: #fff8ee;
+    font: inherit;
+    font-size: 14px;
+    line-height: 1.4;
+    cursor: pointer;
+    transition: background-color 150ms ease, color 150ms ease;
+}
+
+.product-type-pills__pill--sweet {
+    --pill-color: #dca0b0;
+}
+
+.product-type-pills__pill--coffee {
+    --pill-color: #c6a181;
+}
+
+.product-type-pills__pill[aria-pressed='true'] {
+    background: var(--pill-color);
+    color: #482b1b;
+}
+
+.product-type-pills__pill:hover {
+    background: var(--pill-color);
+    color: #482b1b;
+}
+
+.product-type-pills__pill:focus-visible {
+    outline: 2px solid #fff8ee;
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .product-type-pills__pill {
+        transition: none;
+    }
+}

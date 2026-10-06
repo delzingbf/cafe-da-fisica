@@ -1,5 +1,5 @@
 import { Check, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
-import { EMAIL_CHECKS } from '../database/checks.js';
+import { EMAIL_CHECKS } from '../../infrastructure/database/checks.js';
 
 @Entity({ name: 'admins' })
 @Unique('UQ_admins_email', ['email'])

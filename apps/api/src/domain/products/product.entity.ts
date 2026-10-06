@@ -1,6 +1,6 @@
 import { PRODUCT_TYPES, type ProductType } from '@cafe-da-fisica/shared';
 import { Check, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { decimalTransformer } from '../database/transformers.js';
+import { decimalTransformer } from '../../infrastructure/database/transformers.js';
 import { OrderItem } from '../orders/order-item.entity.js';
 
 @Entity({ name: 'products' })

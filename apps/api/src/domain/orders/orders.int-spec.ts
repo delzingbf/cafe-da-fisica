@@ -2,11 +2,11 @@ import { Test } from '@nestjs/testing';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
 import type { Repository } from 'typeorm';
-import { validateEnv } from '../config/env.js';
-import { DatabaseModule } from '../database/database.module.js';
+import { validateEnv } from '../../infrastructure/config/env.js';
+import { DatabaseModule } from '../../infrastructure/database/database.module.js';
 import { Product } from '../products/product.entity.js';
 import { Settings } from '../settings/settings.entity.js';
-import { testDataSource } from '../../test/setup-database.js';
+import { testDataSource } from '../../../test/setup-database.js';
 import { OrderItem } from './order-item.entity.js';
 import { Order } from './order.entity.js';
 
