@@ -18,13 +18,13 @@ if (!apiKey) throw new Error('Set RESEND_API_KEY in apps/api/.env to send test e
 // Only the fields the templates read.
 const order = {
     id: 42,
-    customerName: "Thomas Tur'Bando",
-    customerEmail: 'thomastb@example.com',
+    customerName: 'Mateus Pletsch',
+    customerEmail: 'mateusp@example.com',
     paymentOption: 'pix',
     deliveryMethod: 'delivery',
     deliveryLocation: 'Sala 101, Instituto de Física',
     items: [
-        { quantity: 2, unitPrice: 4, product: { name: 'Café coado' } },
+        { quantity: 2, unitPrice: 4, product: { name: 'Térmica de café' } },
         { quantity: 1, unitPrice: 8, product: { name: 'Bolo de cenoura' } },
         { quantity: 3, unitPrice: 6.5, product: { name: 'Pão de queijo' } },
     ],
