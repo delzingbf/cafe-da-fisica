@@ -4,12 +4,12 @@
 
 .catalogo-grid {
     --grid-gap: 20px;
-    --grid-max-columns: 5;
+    --grid-max-columns: 6;
     --card-min-width: 160px;
 
     display: grid;
     /* As many columns as fit (each at least --card-min-width), capped at --grid-max-columns:
-       a column can never be narrower than 1/5 of the row, so a 6th never fits. */
+       a column can never be narrower than 1/6 of the row, so a 7th never fits. */
     grid-template-columns: repeat(
         auto-fill,
         minmax(

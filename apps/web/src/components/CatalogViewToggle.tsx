@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react';
 import type { CatalogView } from '../hooks/useCatalogView';
-import './CatalogViewToggle.css';
+import './styles/CatalogViewToggle.css';
 
 type Props = {
     view: CatalogView;

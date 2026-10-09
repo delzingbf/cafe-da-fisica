@@ -168,6 +168,23 @@
     background: none;
     border: 1px solid var(--color-border);
     color: inherit;
+    transition:
+        background-color 150ms ease,
+        border-color 150ms ease,
+        color 150ms ease;
+}
+
+/* Fica vermelho ao passar o mouse: avisa que a ação apaga o carrinho */
+.cart-drawer__clear:hover {
+    background: var(--color-error);
+    border-color: var(--color-error);
+    color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cart-drawer__clear {
+        transition: none;
+    }
 }
 
 .cart-drawer__checkout {

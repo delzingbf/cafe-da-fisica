@@ -1,4 +1,4 @@
-import './VeganToggleFilter.css';
+import './styles/VeganToggleFilter.css';
 
 type Props = {
     veganOnly: boolean;

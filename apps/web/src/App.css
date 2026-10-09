@@ -2,7 +2,9 @@
     display: grid;
     grid-template-rows: auto 1fr auto;
     min-height: 100svh;
-    max-width: 1200px;
+    /* Central column grows with the screen: 70% of the window width, at least 1200px
+       (smaller screens just use the full width) and at most 2000px. */
+    max-width: clamp(1200px, 80vw, 2000px);
     margin: 0 auto;
     padding: 0 16px;
 }

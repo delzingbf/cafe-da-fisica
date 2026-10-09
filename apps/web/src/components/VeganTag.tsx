@@ -1,4 +1,4 @@
-import './VeganTag.css';
+import './styles/VeganTag.css';
 
 /** The "vegano" pill shown on cards, list rows and the product modal. */
 export function VeganTag() {

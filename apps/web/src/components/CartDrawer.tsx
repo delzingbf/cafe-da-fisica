@@ -2,7 +2,7 @@ import { useId, useState } from 'react';
 import { useCart } from '../hooks/useCart';
 import { formatPrice } from '../utils/formatPrice';
 import { Dialog } from './Dialog';
-import './CartDrawer.css';
+import './styles/CartDrawer.css';
 
 // Drawn with `currentColor`, so it follows the button's text color (unlike an emoji).
 function CartIcon() {

@@ -1,4 +1,4 @@
-import './ProductSearchBar.css';
+import './styles/ProductSearchBar.css';
 
 type Props = {
     searchInput: string;

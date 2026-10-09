@@ -1,5 +1,5 @@
 import { useEffect, useRef, type ReactNode } from 'react';
-import './Dialog.css';
+import './styles/Dialog.css';
 
 export interface DialogProps {
     /** Called when the dialog closes itself: Esc or a click on the backdrop. */

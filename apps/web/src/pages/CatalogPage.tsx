@@ -1,4 +1,4 @@
-import './CatalogPage.css';
+import './styles/CatalogPage.css';
 import { useEffect } from 'react';
 import type { ProductType } from '@cafe-da-fisica/shared';
 import { CatalogViewToggle } from '../components/CatalogViewToggle';

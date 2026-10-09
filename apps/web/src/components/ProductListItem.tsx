@@ -3,7 +3,7 @@ import type { ProductResponse } from '@cafe-da-fisica/shared';
 import { formatPrice } from '../utils/formatPrice';
 import { ProductModal } from './ProductModal';
 import { VeganTag } from './VeganTag';
-import './ProductListItem.css';
+import './styles/ProductListItem.css';
 
 export interface ProductListItemProps {
     product: ProductResponse;

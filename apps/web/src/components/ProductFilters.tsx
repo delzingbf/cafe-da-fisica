@@ -3,7 +3,7 @@ import type { ProductType } from '@cafe-da-fisica/shared';
 import { ProductTypePills } from './ProductTypePills';
 import { VeganToggleFilter } from './VeganToggleFilter';
 import { ProductSearchBar } from './ProductSearchBar';
-import './ProductFilters.css';
+import './styles/ProductFilters.css';
 
 type Props = {
     selectedType: ProductType | null;

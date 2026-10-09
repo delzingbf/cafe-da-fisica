@@ -4,7 +4,7 @@ import { useCart } from '../hooks/useCart';
 import { formatPrice } from '../utils/formatPrice';
 import { Dialog } from './Dialog';
 import { VeganTag } from './VeganTag';
-import './ProductModal.css';
+import './styles/ProductModal.css';
 
 export interface ProductModalProps {
     product: ProductResponse;

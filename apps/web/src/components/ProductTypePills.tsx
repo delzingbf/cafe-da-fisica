@@ -1,5 +1,5 @@
 import type { ProductType } from '@cafe-da-fisica/shared';
-import './ProductTypePills.css';
+import './styles/ProductTypePills.css';
 
 type Props = {
     selectedType: ProductType | null;
