@@ -1,11 +1,20 @@
 import './CatalogPage.css';
+import { useEffect } from 'react';
 import type { ProductType } from '@cafe-da-fisica/shared';
+import { CatalogViewToggle } from '../components/CatalogViewToggle';
 import { ProductCard } from '../components/ProductCard';
+import { ProductListItem } from '../components/ProductListItem';
+import { useCart } from '../hooks/useCart';
+import { useCatalogView } from '../hooks/useCatalogView';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 import { useProducts } from '../hooks/useProducts';
 import { ProductFilters } from '../components/ProductFilters';
 import { useProductFilters } from '../hooks/useProductFilters';
 
 // DICIONARIO CONVERSÃO PARA PT BR
+// Phones only get the list view: cards are too cramped there.
+const LIST_ONLY_QUERY = '(max-width: 600px)';
+
 const TYPE_LABELS = {
     sweet: 'Doce',
     savory: 'Salgado',
@@ -27,6 +36,16 @@ export function CatalogPage() {
         setSearchInput,
         setSearchQuery,
     } = useProductFilters(products);
+    const [savedView, setView] = useCatalogView();
+    const listOnly = useMediaQuery(LIST_ONLY_QUERY);
+    // The saved choice is kept, so it comes back on a wider screen.
+    const view = listOnly ? 'list' : savedView;
+
+    // Brings the saved cart up to date with the menu (prices, removed or unavailable products).
+    const { syncWithCatalog } = useCart();
+    useEffect(() => {
+        if (res.kind === 'ready') syncWithCatalog(res.products);
+    }, [res, syncWithCatalog]);
 
     if (res.kind === 'loading') {
         return <p role="status">Carregando os produtos…</p>;
@@ -44,7 +63,7 @@ export function CatalogPage() {
     // PAGINA DOS ITENS
     return (
         <div className="catalog__page">
-            <ProductFilters 
+            <ProductFilters
                 selectedType={selectedType}
                 veganOnly={veganOnly}
                 setSelectedType={setSelectedType}
@@ -52,24 +71,35 @@ export function CatalogPage() {
                 searchInput={searchInput}
                 setSearchInput={setSearchInput}
                 setSearchQuery={setSearchQuery}
-            />
+            >
+                {!listOnly && <CatalogViewToggle view={view} onViewChange={setView} />}
+            </ProductFilters>
 
-            <div className="catalogo-grid">
-                {filteredProducts.length === 0 && (
-                    <p className="catalog__empty" role="status">
-                        Nenhum item correspondente encontrado. Tente outra busca ou altere os filtros.
-                    </p>
-                )}
-                {filteredProducts.map((product) => (
-                    <ProductCard
-                        key={product.id}
-                        name={product.name}
-                        price={product.price}
-                        isVegan={product.vegan}
-                        type={TYPE_LABELS[product.type]}
-                    />
-                ))}
-            </div>
+            {filteredProducts.length === 0 ? (
+                <p className="catalog__empty" role="status">
+                    Nenhum item correspondente encontrado. Tente outra busca ou altere os filtros.
+                </p>
+            ) : view === 'grid' ? (
+                <div className="catalogo-grid">
+                    {filteredProducts.map((product) => (
+                        <ProductCard
+                            key={product.id}
+                            product={product}
+                            typeLabel={TYPE_LABELS[product.type]}
+                        />
+                    ))}
+                </div>
+            ) : (
+                <ul className="catalogo-lista">
+                    {filteredProducts.map((product) => (
+                        <ProductListItem
+                            key={product.id}
+                            product={product}
+                            typeLabel={TYPE_LABELS[product.type]}
+                        />
+                    ))}
+                </ul>
+            )}
         </div>
     );
 }

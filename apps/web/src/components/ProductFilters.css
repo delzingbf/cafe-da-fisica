@@ -1,0 +1,12 @@
+/* Pílulas de tipo + "Vegano" à esquerda; controles extras (Cards/Lista) na ponta direita */
+.product__filters-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    row-gap: 8px;
+}
+
+.product__filters-end {
+    margin-left: auto;
+    padding-left: 16px;
+}

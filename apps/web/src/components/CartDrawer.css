@@ -1,0 +1,182 @@
+.cart-drawer__toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--color-accent);
+    color: var(--color-surface);
+    border: none;
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font: inherit;
+    font-weight: bold;
+}
+
+.cart-drawer__icon {
+    width: 1.25em;
+    height: 1.25em;
+    flex-shrink: 0;
+}
+
+.cart-drawer__count {
+    display: inline-block;
+}
+
+.cart-drawer__count--bump {
+    animation: cart-count-bump 0.3s ease;
+}
+
+@keyframes cart-count-bump {
+    50% {
+        transform: scale(1.35);
+    }
+}
+
+/* "Added to cart" notice: fades in, stays ~2s, fades out and hides itself. */
+.cart-toast-region {
+    position: fixed;
+    inset-inline: 16px;
+    bottom: 24px;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.cart-toast {
+    margin: 0;
+    padding: 10px 16px;
+    border-radius: var(--radius);
+    background: var(--color-text);
+    color: var(--color-bg);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    animation: cart-toast 2.5s ease forwards;
+}
+
+@keyframes cart-toast {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    10%,
+    85% {
+        opacity: 1;
+        transform: none;
+    }
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+@keyframes cart-toast-hide {
+    to {
+        visibility: hidden;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cart-drawer__count--bump {
+        animation: none;
+    }
+
+    /* No fade or slide: just shows and then disappears. */
+    .cart-toast {
+        animation: cart-toast-hide 2.5s step-end forwards;
+    }
+}
+
+/* Side panel inside the <Dialog placement="end">, which sets its size. */
+.cart-drawer {
+    background: var(--color-surface);
+    color: var(--color-text);
+    padding: 20px;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+}
+
+.cart-drawer__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 10px;
+}
+
+.cart-drawer__icon-button {
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    color: inherit;
+    min-width: 32px;
+    height: 32px;
+    cursor: pointer;
+    font: inherit;
+}
+
+.cart-drawer__empty {
+    color: var(--color-text-muted);
+}
+
+.cart-drawer__items {
+    flex: 1;
+    overflow-y: auto;
+    margin: 15px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.cart-drawer__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.cart-drawer__item-price {
+    color: var(--color-text-muted);
+}
+
+.cart-drawer__item-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cart-drawer__footer {
+    border-top: 1px solid var(--color-border);
+    padding-top: 15px;
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.cart-drawer__clear,
+.cart-drawer__checkout {
+    padding: 10px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font: inherit;
+    font-weight: bold;
+}
+
+.cart-drawer__clear {
+    background: none;
+    border: 1px solid var(--color-border);
+    color: inherit;
+}
+
+.cart-drawer__checkout {
+    background: var(--color-ok);
+    color: #fff;
+    border: none;
+}
+
+.cart-drawer__checkout:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

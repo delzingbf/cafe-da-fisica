@@ -1,0 +1,29 @@
+/* Resets the browser's default <dialog> box; the panel inside owns padding, background, etc. */
+.dialog {
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--color-text);
+    max-width: none;
+    max-height: none;
+}
+
+/* Darkens and blurs the page behind the dialog. */
+.dialog::backdrop {
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(6px);
+}
+
+.dialog--center {
+    width: min(400px, calc(100% - 32px));
+}
+
+.dialog--end {
+    margin: 0 0 0 auto;
+    width: min(350px, 90vw);
+    height: 100%;
+}
+
+.dialog--end > * {
+    height: 100%;
+}

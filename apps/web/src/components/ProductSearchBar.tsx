@@ -6,11 +6,7 @@ type Props = {
     onSearchQueryChange: (query: string) => void;
 };
 
-export function ProductSearchBar({
-    searchInput,
-    onSearchInputChange,
-    onSearchQueryChange,
-}: Props) {
+export function ProductSearchBar({ searchInput, onSearchInputChange, onSearchQueryChange }: Props) {
     return (
         <form
             className="product-search-bar"
@@ -21,7 +17,15 @@ export function ProductSearchBar({
             }}
         >
             <button type="submit" aria-label="Pesquisar produtos">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    aria-hidden="true"
+                >
                     <circle cx="10" cy="10" r="6" />
                     <path d="m15 15 5 5" />
                 </svg>

@@ -1,6 +1,5 @@
 import './Footer.css';
 
-
 export function Footer() {
     return (
         <footer className="app__footer">
@@ -8,10 +7,11 @@ export function Footer() {
                 <div className="app__footer-brand">
                     <strong>Café da Física</strong>
                     <p>O melhor café do Campus do Vale</p>
-                    
+
                     <p>Café, doces e salgados</p>
                     <strong className="app__footer-hours">Horário de Funcionamento</strong>
-                    <p>Segunda-Feira à Sexta-Feira, das 8h às 16h30min e 18h30min às 20h!</p>
+                    <p>Segunda-feira à quinta-feira: 8h--16h30 e 18h30--20h</p>
+                    <p>Sexta-feira: 8h--16h30</p>
                 </div>
                 <address className="app__footer-location">
                     <strong>Localização</strong>

@@ -1,0 +1,79 @@
+/* caixa do pop-up (dentro do <Dialog>) */
+.modal-content {
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    padding: 32px;
+    border-radius: 16px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.botao-fechar {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--color-text-muted);
+}
+
+.botao-adicionar {
+    background-color: var(--color-accent);
+    color: var(--color-surface);
+    border: none;
+    padding: 12px 24px;
+    border-radius: var(--radius);
+    font: inherit;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 16px;
+    transition: background-color 0.2s;
+}
+
+.botao-adicionar:hover {
+    background-color: color-mix(in srgb, var(--color-accent) 85%, black);
+}
+
+.botao-adicionar:disabled {
+    background-color: var(--color-accent);
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.modal-preco {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 8px 0;
+}
+
+/* Nome, categoria e "vegano" agrupados, com pouco espaço entre eles */
+.modal-cabecalho {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-align: center;
+}
+
+.modal-cabecalho h2 {
+    margin: 0;
+    padding: 0 24px; /* não passa por baixo do botão de fechar (X) */
+    overflow-wrap: anywhere;
+}
+
+.modal-tipo {
+    color: var(--color-text-muted);
+    margin: 0;
+}
+
+.modal-cabecalho .tag-vegano {
+    margin-top: 4px;
+}

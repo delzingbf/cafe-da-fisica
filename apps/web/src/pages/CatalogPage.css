@@ -3,18 +3,45 @@
 }
 
 .catalogo-grid {
-    display: grid;
+    --grid-gap: 20px;
+    --grid-max-columns: 5;
+    --card-min-width: 160px;
 
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 180px), 1fr));
+    display: grid;
+    /* As many columns as fit (each at least --card-min-width), capped at --grid-max-columns:
+       a column can never be narrower than 1/5 of the row, so a 6th never fits. */
+    grid-template-columns: repeat(
+        auto-fill,
+        minmax(
+            min(
+                100%,
+                max(
+                    var(--card-min-width),
+                    (100% - (var(--grid-max-columns) - 1) * var(--grid-gap)) /
+                        var(--grid-max-columns)
+                )
+            ),
+            1fr
+        )
+    );
     grid-auto-rows: 1fr;
-    gap: 20px;
+    gap: var(--grid-gap);
     width: 100%;
     margin-top: 20px;
 }
 
+/* Visualização em lista: uma linha por produto */
+.catalogo-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 20px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
 .catalog__empty {
-    grid-column: 1 / -1;
-    margin: 0;
+    margin: 20px 0 0;
     padding: 32px 16px;
     border: 1px solid var(--color-border);
     border-radius: var(--radius);

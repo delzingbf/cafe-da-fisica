@@ -10,13 +10,13 @@ export function useProductFilters(products: ProductResponse[]) {
     const normalizedQuery = normalizeText(searchQuery.trim());
 
     const filteredProducts: ProductResponse[] = products.filter(
-        (product) => 
-        (!selectedType || product.type === selectedType) &&
-        (!veganOnly || product.vegan) &&
-        normalizeText(product.name).includes(normalizedQuery)
+        (product) =>
+            (!selectedType || product.type === selectedType) &&
+            (!veganOnly || product.vegan) &&
+            normalizeText(product.name).includes(normalizedQuery),
     );
 
-    return { 
+    return {
         filteredProducts,
         selectedType,
         setSelectedType,
@@ -29,8 +29,8 @@ export function useProductFilters(products: ProductResponse[]) {
 }
 
 function normalizeText(text: string) {
-  return text
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase();
+    return text
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase();
 }

@@ -1,0 +1,48 @@
+/* Segmented control: [▦ Cards | ☰ Lista] */
+.catalog-view-toggle {
+    display: inline-flex;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.catalog-view-toggle__option {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border: none;
+    background: var(--color-surface);
+    color: var(--color-text-muted);
+    font: inherit;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.catalog-view-toggle__option + .catalog-view-toggle__option {
+    border-left: 1px solid var(--color-border);
+}
+
+.catalog-view-toggle__option:hover {
+    color: var(--color-text);
+}
+
+.catalog-view-toggle__option[aria-pressed='true'] {
+    background: var(--color-accent);
+    color: var(--color-surface);
+}
+
+.catalog-view-toggle__option:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: -4px;
+}
+
+.catalog-view-toggle__option[aria-pressed='true']:focus-visible {
+    outline-color: var(--color-surface);
+}
+
+.catalog-view-toggle__icon {
+    width: 1.125em;
+    height: 1.125em;
+    flex-shrink: 0;
+}

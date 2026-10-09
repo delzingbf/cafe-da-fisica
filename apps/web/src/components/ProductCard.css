@@ -1,140 +1,91 @@
-/* caixa do card*/
+/* caixa do card */
 .card-container {
-  background-color: #FDF9F5;
-  border-radius: 12px;       /* Arredonda as pontas da caixa */
-  border: 1px solid #EAEAEA; /* contorno*/
-  padding: 16px;             /* MARGEM INTERNA*/
-  width: 100%;
-  min-width: 0;
-  min-height: 250px;
-  height: 100%;
+    position: relative; /* âncora do botão que cobre o card (.card-abrir::after) */
+    background-color: var(--color-surface);
+    border-radius: 12px;
+    border: 1px solid var(--color-border);
+    padding: 16px 16px 10px;
+    width: 100%;
+    min-width: 0;
+    height: 100%;
 
-  display: flex;
-  flex-direction: column;    /* Empilha os itens forma de coluna */
-  align-items: center;       /* Centraliza os itens horizontalmente no meio da caixa */
-  gap: 16px;
-  cursor: pointer;
+    display: flex;
+    flex-direction: column; /* Empilha os itens em coluna */
+    align-items: center; /* Centraliza os itens horizontalmente */
+    gap: 8px;
 }
+
+/* Contorno de foco no card inteiro quando o botão é focado pelo teclado */
+.card-container:has(.card-abrir:focus-visible) {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
+/* Nome + preço juntos, sem espaço entre eles */
+.card-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .card-titulo {
-  font-family: sans-serif;
-  font-size: 16px;
-  font-weight: bold;
-  color: #2c1e16 !important;
-  margin: 12px 0;
-  text-align: center;
-  min-height: 2.8em;
-  line-height: 1.4;
-  overflow-wrap: anywhere;
+    font-size: 1.1875rem;
+    font-weight: bold;
+    margin: 0;
+    text-align: center;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
 }
 
-.card-foto{
-  width: 100px;
-  height: 100px;
-  flex-shrink: 0;
-  background-color: #eaddcf;
-  border-radius: 50%;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 32px;
+/* Preço e "vegano" lado a lado */
+.card-preco-linha {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
-.tag-vegano {
-  background-color: #E8F5E9;
-  color: #2E7D32;
-  padding: 4px 12px;
-  border-radius: 999px;      /*formato de pílula */
-  font-size: 14px;
-  font-weight: bold;
-  font-family: sans-serif;
+.card-preco {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: bold;
+    color: var(--color-accent);
 }
 
-.card-container > .tag-vegano {
-  margin-top: auto;
+/* Botão com a aparência do título; o ::after estende a área clicável ao card todo */
+.card-abrir {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: var(--color-text);
+    text-align: inherit;
+    cursor: pointer;
 }
 
-/* O fundo escuro que bloqueia a página inteira e desfoca o fundo */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.4); /*40% de transparência */
-  backdrop-filter: blur(8px); /* LINHA QUE DESFOCA O FUNDO */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000; /* Garante que fica por cima de tudo */
+.card-abrir:focus-visible {
+    outline: none;
 }
 
-/*caixa do pop-up */
-.modal-content {
-  background-color: #FFF6EC;
-  padding: 32px;
-  border-radius: 16px;
-  width: 90%;
-  max-width: 400px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
+.card-abrir::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
 }
 
+.card-foto {
+    /* Ocupa a largura toda, colada nas bordas do card (anula o padding de 16px dele) */
+    align-self: stretch;
+    margin: -16px -16px 0;
+    aspect-ratio: 16 / 9;
+    flex-shrink: 0;
+    border-radius: 11px 11px 0 0; /* raio do card (12px) menos a borda (1px) */
+    background-color: color-mix(in srgb, var(--color-accent) 25%, var(--color-surface));
 
-.botao-fechar {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  background: none;
-  border: none;
-  font-size: 20px;
-  font-weight: bold;
-  cursor: pointer;
-  color: #666;
-}
-
-.botao-adicionar {
-  background-color: #8b4513;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  width: 100%;
-  margin-top: 16px;
-  transition: background-color 0.2s;
-}
-
-.botao-adicionar:hover {
-  background-color: #6b3410;
-}
-
-
-.modal-preco {
-  font-size: 24px;
-  font-weight: bold;
-  color: #2c1e16;
-  margin: 8px 0;
-}
-
-/* Escurece o título dentro do modal */
-.modal-content h2 {
-  color: #2c1e16;
-  margin: 8px 0 4px 0;
-}
-
-/* Escurece o texto da categoria */
-.modal-tipo {
-  color: #555555;
-  margin: 0;
-}
-
-h3.card-titulo {
-  color: #2c1e16 !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
 }

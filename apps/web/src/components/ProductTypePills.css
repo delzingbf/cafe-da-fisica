@@ -14,10 +14,12 @@
     background: transparent;
     color: #fff8ee;
     font: inherit;
-    font-size: 14px;
+    font-size: 0.875rem;
     line-height: 1.4;
     cursor: pointer;
-    transition: background-color 150ms ease, color 150ms ease;
+    transition:
+        background-color 150ms ease,
+        color 150ms ease;
 }
 
 .product-type-pills__pill--sweet {
@@ -26,6 +28,10 @@
 
 .product-type-pills__pill--coffee {
     --pill-color: #c6a181;
+}
+
+.product-type-pills__pill--other {
+    --pill-color: #a8b88a;
 }
 
 .product-type-pills__pill[aria-pressed='true'] {

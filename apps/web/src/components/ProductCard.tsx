@@ -1,57 +1,53 @@
-import { useState} from 'react';;
+import { useState } from 'react';
+import type { ProductResponse } from '@cafe-da-fisica/shared';
+import { formatPrice } from '../utils/formatPrice';
+import { ProductModal } from './ProductModal';
+import { VeganTag } from './VeganTag';
 import './ProductCard.css';
 
-
-// 'struct do card'
 export interface ProductCardProps {
-  name: string;
-  isVegan: boolean;
-  type: string;
-  price: number;
-  imagemPlaceholder?: string; // ? == opcional
+    product: ProductResponse;
+    /** Category label shown in the modal (e.g. "Doce"). */
+    typeLabel: string;
 }
 
-// recebe dados e exporta a interface
-export function ProductCard({name, isVegan, type, price}: ProductCardProps) {
+export function ProductCard({ product, typeLabel }: ProductCardProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    return(
+
+    return (
         <>
+            <div className="card-container">
+                {/* AQUI IREMOS COLOCAR A FOTO */}
+                <div className="card-foto" aria-hidden="true">
+                    📷
+                </div>
 
-    <div className='card-container' onClick={() => setIsModalOpen(true)}>
-      <h3 className='card-titulo'>{name}</h3>
-      {/* AQUI IREMOS COLOCAR A FOTO*/}
-      <div className='card-foto'>
-        📷
-      </div>
+                <div className="card-info">
+                    <h3 className="card-titulo">
+                        {/* Its ::after covers the whole card: the card is clickable and reachable with Tab. */}
+                        <button
+                            type="button"
+                            className="card-abrir"
+                            aria-haspopup="dialog"
+                            onClick={() => setIsModalOpen(true)}
+                        >
+                            {product.name}
+                        </button>
+                    </h3>
+                    <div className="card-preco-linha">
+                        <p className="card-preco">{formatPrice(product.price)}</p>
+                        {product.vegan && <VeganTag />}
+                    </div>
+                </div>
+            </div>
 
-      {isVegan && (
-        <span className="tag-vegano">vegano</span>
-      )}
-
-    </div>
-    {/* janela do modal*/}
-    {isModalOpen && (
-        <div className = "modal-overlay">
-        <div className = "modal-content">
-
-        <button className="botao-fechar" onClick={() => setIsModalOpen(false)}>X</button>
-
-         {/*INFORMACOES SOBRE PRODUTO*/}
-
-         <div className ='modal-foto-grande'>📷</div>
-         <h2>{name}</h2>
-         <p className="modal-tipo">Categoria: {type}</p>
-         <p className ="modal-preco">R$ {price.toFixed(2)}</p>
-
-         {isVegan && (
-            <span className="tag-vegano">vegano</span>
-         )}
-
-         <button className="botao-adicionar">Adicionar no carrinho</button>
-
-         </div>
-    </div>
-    )}
-    </>
-  );
+            {isModalOpen && (
+                <ProductModal
+                    product={product}
+                    typeLabel={typeLabel}
+                    onClose={() => setIsModalOpen(false)}
+                />
+            )}
+        </>
+    );
 }
