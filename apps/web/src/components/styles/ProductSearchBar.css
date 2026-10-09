@@ -2,7 +2,10 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 12px;
+    /* Width follows the screen (50% of the window), but never less than 480px (or the full
+       width on phones) nor more than 1000px; aligned to the left. */
+    max-width: clamp(min(100%, 480px), 30vw, 8000px);
+    margin: 0 auto 12px;
     padding: 8px 12px;
     border: 1px solid var(--color-border);
     border-radius: 6px;

@@ -6,10 +6,14 @@
     --grid-gap: 20px;
     --grid-max-columns: 6;
     --card-min-width: 160px;
+    /* Cap on how wide a card can get on big screens. */
+    --card-max-width: 270px;
 
     display: grid;
-    /* As many columns as fit (each at least --card-min-width), capped at --grid-max-columns:
-       a column can never be narrower than 1/6 of the row, so a 7th never fits. */
+    /* Cards share the row equally, so they grow in proportion to the central column (see .app
+       in App.css). As many columns as fit (each at least
+       --card-min-width), capped at --grid-max-columns: a column can never be narrower than
+       1/6 of the row, so a 7th never fits. */
     grid-template-columns: repeat(
         auto-fill,
         minmax(
@@ -26,8 +30,22 @@
     );
     grid-auto-rows: 1fr;
     gap: var(--grid-gap);
+    /* The grid never gets wider than --grid-max-columns cards at --card-max-width, so cards
+       stop growing there; the grid is then centered. */
     width: 100%;
-    margin-top: 20px;
+    max-width: calc(
+        var(--grid-max-columns) * var(--card-max-width) + (var(--grid-max-columns) - 1) *
+            var(--grid-gap)
+    );
+    margin: 20px auto 0;
+}
+
+/* Big screens (1440p and up): one more card per row. From ~2240px wide, 7 columns are still
+   at least as wide as the 6 columns at 1080p, so cards never shrink. */
+@media (min-width: 2240px) {
+    .catalogo-grid {
+        --grid-max-columns: 7;
+    }
 }
 
 /* Visualização em lista: uma linha por produto */

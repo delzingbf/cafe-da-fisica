@@ -48,8 +48,10 @@ export function ProductFilters({
                 onSearchQueryChange={setSearchQuery}
             />
             <div className="product__filters-row">
-                <ProductTypePills selectedType={selectedType} onTypeChange={setSelectedType} />
-                <VeganToggleFilter veganOnly={veganOnly} onVeganChange={setVeganOnly} />
+                <div className="product__filters-main">
+                    <ProductTypePills selectedType={selectedType} onTypeChange={setSelectedType} />
+                    <VeganToggleFilter veganOnly={veganOnly} onVeganChange={setVeganOnly} />
+                </div>
                 {children && <div className="product__filters-end">{children}</div>}
             </div>
         </div>

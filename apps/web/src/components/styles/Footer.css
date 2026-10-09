@@ -9,10 +9,13 @@
     font: 0.9375rem / 1.5 var(--font-sans);
 }
 
+/* The two columns (brand/hours and location) as one block in the middle of the footer:
+   each column is as wide as its content, with a fixed gap keeping them apart. */
 .app__footer-info {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(2, auto);
+    justify-content: center;
+    gap: 24px 64px;
 }
 
 .app__footer-brand strong {

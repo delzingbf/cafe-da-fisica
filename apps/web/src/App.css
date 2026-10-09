@@ -1,9 +1,12 @@
 .app {
     display: grid;
     grid-template-rows: auto 1fr auto;
+    /* One column exactly as wide as .app: without it the column grows to fit its widest
+       content (e.g. the card grid's max-width) and the page overflows sideways. */
+    grid-template-columns: minmax(0, 1fr);
     min-height: 100svh;
-    /* Central column grows with the screen: 70% of the window width, at least 1200px
-       (smaller screens just use the full width) and at most 2000px. */
+    /* Central column grows with the screen: a share of the window width (the vw value),
+       at least 1200px (smaller screens just use the full width) and at most 2000px. */
     max-width: clamp(1200px, 80vw, 2000px);
     margin: 0 auto;
     padding: 0 16px;
