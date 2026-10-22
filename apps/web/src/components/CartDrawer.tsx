@@ -2,6 +2,7 @@ import { useId, useState } from 'react';
 import { useCart } from '../hooks/useCart';
 import { formatPrice } from '../utils/formatPrice';
 import { Dialog } from './Dialog';
+import { CheckoutModal } from './CheckoutModal';
 import './styles/CartDrawer.css';
 
 // Drawn with `currentColor`, so it follows the button's text color (unlike an emoji).
@@ -26,6 +27,7 @@ function CartIcon() {
 
 export function CartDrawer() {
     const [isOpen, setIsOpen] = useState(false);
+    const [checkoutOpen, setCheckoutOpen] = useState(false);
     const titleId = useId();
     const { cart, lastAdded, totalItems, totalPrice, updateQuantity, removeFromCart, clearCart } =
         useCart();
@@ -86,7 +88,7 @@ export function CartDrawer() {
                                         </div>
                                         <div className="cart-drawer__item-controls">
                                             <button
-                                                className="cart-drawer__icon-button"
+                                                className="cart-drawer__icon-button cart-drawer__icon-button--decrease"
                                                 aria-label={`Diminuir quantidade de ${product.name}`}
                                                 onClick={() =>
                                                     updateQuantity(product.id, quantity - 1)
@@ -98,7 +100,7 @@ export function CartDrawer() {
                                                 {quantity}
                                             </span>
                                             <button
-                                                className="cart-drawer__icon-button"
+                                                className="cart-drawer__icon-button cart-drawer__icon-button--increase"
                                                 aria-label={`Aumentar quantidade de ${product.name}`}
                                                 onClick={() =>
                                                     updateQuantity(product.id, quantity + 1)
@@ -123,15 +125,15 @@ export function CartDrawer() {
                                 <button className="cart-drawer__clear" onClick={clearCart}>
                                     Esvaziar carrinho
                                 </button>
-                                {/* TODO: enable once the checkout flow (POST /api/orders) exists. */}
-                                <button className="cart-drawer__checkout" disabled>
-                                    Finalizar pedido
+                                <button className="cart-drawer__checkout" onClick={() => setCheckoutOpen(true)}>
+                                    Confirmar pedido
                                 </button>
                             </div>
                         </>
                     )}
                 </Dialog>
             )}
+            <CheckoutModal open={isOpen && checkoutOpen} onClose={() => setCheckoutOpen(false)} />
         </>
     );
 }

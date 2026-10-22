@@ -197,3 +197,17 @@
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+@media (hover: hover) {
+    .cart-drawer__icon-button--decrease:hover {
+        background: var(--color-error);
+        border-color: var(--color-error);
+        color: #fff;
+    }
+
+    .cart-drawer__icon-button--increase:hover {
+        background: var(--color-ok);
+        border-color: var(--color-ok);
+        color: #fff;
+    }
+}
