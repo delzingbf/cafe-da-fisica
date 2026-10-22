@@ -12,3 +12,5 @@ Arquivo expondo o uso de IA generativa - Alberto:
 - usei para me ajudar a criar o product.module e seus componentes associados, pois nunca era muito familiar com o NestJS, me ajudou bastante a entender o funcionamento da API, que achei muito útil e interessante.
 
 - usei para realizar mudanças no frontend, pois existem muitos detalhes de React e CSS desconhecidos por mim, que tenho só um conhecimento básico e prático. Por exemplo, usei bastante para gerar um componente inicial e, a partir dele, realizar as mudanças e arrumar o estilo. Poupa muito tempo de implementação que é revertido para uma melhor personalização estética.
+
+- questão de autenticação (para login de contas administradoras). Não tinha conhecimento sobre como funciona essa questão de tokens de segurança, assim como armazenamento em cookies. Não quis correr o risco de fazer algo vulnerável, portanto tive bastante auxílio nesse quesito para aprender e não cometer erros graves.

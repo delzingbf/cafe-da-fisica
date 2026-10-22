@@ -24,6 +24,8 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
             `${init.method ?? 'GET'} ${path} failed (${response.status})`,
         );
     }
+    // 204 No Content (e.g. POST /auth/logout) has no body to parse.
+    if (response.status === 204) return undefined as T;
     return (await response.json()) as T;
 }
 

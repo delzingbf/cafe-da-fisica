@@ -14,16 +14,31 @@
     backdrop-filter: blur(6px);
 }
 
+/* Heavy blur: the page behind turns into a soft wash of its colors. */
+.dialog--backdrop-strong::backdrop {
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(24px) saturate(1.2);
+}
+
 .dialog--center {
     width: min(400px, calc(100% - 32px));
 }
 
+.dialog--start,
 .dialog--end {
-    margin: 0 0 0 auto;
     width: min(350px, 90vw);
     height: 100%;
 }
 
+.dialog--start {
+    margin: 0 auto 0 0;
+}
+
+.dialog--end {
+    margin: 0 0 0 auto;
+}
+
+.dialog--start > *,
 .dialog--end > * {
     height: 100%;
 }

@@ -1,27 +1,21 @@
-import { useId } from 'react';
+import { useId, type ReactNode } from 'react';
 import type { ProductResponse } from '@cafe-da-fisica/shared';
-import { useCart } from '../hooks/useCart';
 import { formatPrice } from '../utils/formatPrice';
+import { PRODUCT_TYPE_LABELS } from '../utils/productTypeLabels';
 import { Dialog } from './Dialog';
 import { VeganTag } from './VeganTag';
 import './styles/ProductModal.css';
 
 export interface ProductModalProps {
     product: ProductResponse;
-    /** Category label (e.g. "Doce"). */
-    typeLabel: string;
     onClose: () => void;
+    /** Actions under the price (e.g. the customer's "add to cart" button). */
+    children?: ReactNode;
 }
 
-/** Product details pop-up with the "add to cart" button. Render it only while open. */
-export function ProductModal({ product, typeLabel, onClose }: ProductModalProps) {
-    const { addToCart } = useCart();
+/** Product details pop-up. The page passes its own actions as children. Render it only while open. */
+export function ProductModal({ product, onClose, children }: ProductModalProps) {
     const titleId = useId();
-
-    const handleAddToCart = () => {
-        addToCart(product);
-        onClose();
-    };
 
     return (
         <Dialog onClose={onClose} labelledBy={titleId} className="modal-content">
@@ -31,18 +25,12 @@ export function ProductModal({ product, typeLabel, onClose }: ProductModalProps)
 
             <div className="modal-cabecalho">
                 <h2 id={titleId}>{product.name}</h2>
-                <p className="modal-tipo">Categoria: {typeLabel}</p>
+                <p className="modal-tipo">Categoria: {PRODUCT_TYPE_LABELS[product.type]}</p>
                 {product.vegan && <VeganTag />}
             </div>
             <p className="modal-preco">{formatPrice(product.price)}</p>
 
-            <button
-                className="botao-adicionar"
-                disabled={!product.available}
-                onClick={handleAddToCart}
-            >
-                {product.available ? 'Adicionar no carrinho' : 'Indisponível'}
-            </button>
+            {children}
         </Dialog>
     );
 }

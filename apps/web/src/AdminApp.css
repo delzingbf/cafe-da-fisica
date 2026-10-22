@@ -1,0 +1,45 @@
+.admin-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-actions__add,
+.admin-actions__logout {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font: inherit;
+    font-weight: bold;
+}
+
+/* Same look as the cart button it replaces (.cart-drawer__toggle). */
+.admin-actions__add {
+    background: var(--color-accent);
+    color: var(--color-surface);
+    border: 1px solid var(--color-accent);
+}
+
+.admin-actions__add:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.admin-actions__logout {
+    background: none;
+    border: 1px solid var(--color-border);
+    color: inherit;
+}
+
+.admin-actions__logout:hover {
+    border-color: var(--color-accent);
+}
+
+.admin-actions__icon {
+    width: 1.25em;
+    height: 1.25em;
+    flex-shrink: 0;
+}
