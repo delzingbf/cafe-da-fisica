@@ -90,6 +90,66 @@ npm run dev                                   # shared (watch) + API (:3000) + w
 
 Open http://localhost:5173 — the home page calls `GET /api/health` and shows whether the API and the database are up.
 
+<<<<<<< Updated upstream
+=======
+## Admin panel
+
+The admin panel lives at http://localhost:5173/admin. It shows the same menu as the public site, plus the
+admin tools: a side menu (the ☰ button next to the title) with **Catálogo**, **Relatório** and
+**Configurações**, and an **Adicionar Produto** button in the header. Configurações lets an admin
+change the order notification email and their password; its appearance section is a non-functional
+visual preview of the current management logo and palette. The current brand colors are defined as
+CSS tokens in `apps/web/src/index.css`, and the logo is served from `apps/web/public/`.
+Relatório and Adicionar Produto are placeholders.
+
+### Creating a test admin account
+
+There is no sign-up page: admin accounts are created from the command line. With the database up
+and migrated (`npm run db:up`, `npm run db:migrate`):
+
+```bash
+npm run admin:create -- admin@example.com "admin12345"
+```
+
+Then open http://localhost:5173/admin and log in with that email and password.
+
+- Any email works; the password needs at least 8 characters.
+- Running it again with an email that already exists sets a new password, which is also how to
+  recover a forgotten one.
+- **Use double quotes, or none.** Windows' `cmd.exe` keeps single quotes, so `'admin12345'` would
+  store the quotes as part of the password. The script refuses a password that still has its quotes.
+- The account is saved in the database from `DATABASE_URL` (`apps/api/.env`), your local
+  development database. `npm run db:reset` deletes it, so run the command again afterwards.
+
+### How it works
+
+- **Login** — `POST /api/auth/login` checks the password against `admins.password_hash` (scrypt)
+  and answers with an `admin_session` cookie: a signed JWT, valid for 8 hours, `httpOnly` so page
+  scripts cannot read it. When the panel loads it calls `GET /api/auth/me` to find out whether
+  someone is logged in; **Sair** calls `POST /api/auth/logout`.
+- **Rate limit** — 5 login attempts per minute per IP. After that the API answers 429 for the rest
+  of the minute.
+- **What is actually protected** — the login card only covers the page; the menu behind it is
+  public data anyway. Admin data is protected by the API: a controller with
+  `@UseGuards(AdminGuard)` (import `AuthModule` in its module) answers 401 without a valid session.
+- **Front end** — `apps/web/src/Root.tsx` picks the public site (`App.tsx`) or the admin panel
+  (`AdminApp.tsx`, downloaded only on `/admin`) from the URL. Admin pages: `/admin` (catalog),
+  `/admin/relatorio` and `/admin/configuracoes`.
+- **Secret** — the cookie is signed with `JWT_SECRET`. It can stay empty in development (a built-in
+  development secret is used) but is required in production. Changing it logs every admin out.
+
+Things to settle before deploying (same-site cookie, reverse proxy, SPA fallback for `/admin`) are
+listed in [docs/notes.md](docs/notes.md).
+
+### Troubleshooting
+
+| Message on the login card                         | Cause and fix                                                                              |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| "E-mail ou senha incorretos."                     | Wrong email or password. Run `admin:create` again to set a new password (mind the quotes). |
+| "Muitas tentativas. Aguarde um minuto…"           | Rate limit reached. Wait a minute, or restart the API (the counter is kept in memory).     |
+| "Não foi possível entrar. Verifique sua conexão…" | The API is not answering. Check that `npm run dev` is running and `/api/health` responds.  |
+
+>>>>>>> Stashed changes
 ## Scripts (run from the repo root)
 
 | Script                      | What it does                                            |

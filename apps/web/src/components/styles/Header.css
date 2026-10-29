@@ -1,0 +1,35 @@
+.app__header {
+    display: flex;
+    /* On narrow screens the actions drop below the title instead of overflowing. */
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 32px 0 16px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.app__header-start {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.app__brand {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.app__logo {
+    display: block;
+    width: min(210px, 38vw);
+    height: auto;
+}
+
+.app__subtitle {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}

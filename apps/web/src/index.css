@@ -1,11 +1,16 @@
 /* Global styles: design tokens, reset and base typography. Component styles live next to components. */
 :root {
-    --color-bg: #faf7f2;
-    --color-surface: #ffffff;
-    --color-text: #2b211c;
-    --color-text-muted: #6f625a;
-    --color-border: #e6ded4;
-    --color-accent: #8a5a3c;
+    --color-brand-cream: #e2d9bc;
+    --color-brand-blue: #80abd7;
+    --color-brand-red: #b20e19;
+    --color-brand-brown: #683629;
+
+    --color-bg: var(--color-brand-cream);
+    --color-surface: #f4efdf;
+    --color-text: var(--color-brand-brown);
+    --color-text-muted: #755447;
+    --color-border: #cbbf9d;
+    --color-accent: var(--color-brand-red);
     --color-ok: #2f7d4f;
     --color-warn: #b7791f;
     --color-error: #b3261e;
@@ -25,12 +30,12 @@
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --color-bg: #1b1613;
-        --color-surface: #251f1b;
-        --color-text: #f1eae3;
-        --color-text-muted: #b5a99f;
-        --color-border: #3a312b;
-        --color-accent: #d3a07c;
+        --color-bg: #211713;
+        --color-surface: #30231e;
+        --color-text: #f4efdf;
+        --color-text-muted: #d2c0a9;
+        --color-border: #574039;
+        --color-accent: #ef7d83;
     }
 }
 

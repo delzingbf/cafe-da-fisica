@@ -26,7 +26,7 @@ describe('MailService', () => {
     it('only logs when RESEND_API_KEY is not set', async () => {
         const service = createService({ EMAIL_FROM: 'Café <a@example.com>' });
 
-        await expect(service.send(message)).resolves.toBeUndefined();
+        await expect(service.send(message)).resolves.toBe(false);
         expect(Resend).not.toHaveBeenCalled();
     });
 
@@ -37,7 +37,7 @@ describe('MailService', () => {
             EMAIL_FROM: 'Café <a@example.com>',
         });
 
-        await service.send(message);
+        await expect(service.send(message)).resolves.toBe(true);
 
         expect(Resend).toHaveBeenCalledWith('re_test');
         expect(send).toHaveBeenCalledWith({ from: 'Café <a@example.com>', ...message });

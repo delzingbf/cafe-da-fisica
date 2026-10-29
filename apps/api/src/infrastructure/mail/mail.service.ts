@@ -26,12 +26,12 @@ export class MailService {
         this.from = config.get('EMAIL_FROM', { infer: true });
     }
 
-    async send(message: MailMessage): Promise<void> {
+    async send(message: MailMessage): Promise<boolean> {
         if (!this.resend) {
             this.logger.log(
                 `RESEND_API_KEY not set, skipping "${message.subject}" to ${String(message.to)}`,
             );
-            return;
+            return false;
         }
 
         // The SDK reports API failures in `error` instead of throwing.
@@ -41,5 +41,6 @@ export class MailService {
                 `Resend rejected "${message.subject}": ${error.name} (${error.message})`,
             );
         }
+        return true;
     }
 }
