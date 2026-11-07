@@ -1,156 +1,132 @@
-import React, { useState } from 'react';
-import './ProductForm.css';
+iimport { useState } from 'react';
+import './App.css';
+import './AdminApp.css';
+import { AdminMenu } from './components/AdminMenu';
+import { Footer } from './components/Footer';
+import { Header } from './components/Header';
+import { LoginDialog } from './components/LoginDialog';
+import { ProductForm } from './components/ProductForm';
+import type { ProductFormData } from './components/ProductForm';
+import { useAdminSection } from './hooks/useAdminSection';
+import { useAdminSession } from './hooks/useAdminSession';
+import { AdminCatalogPage } from './pages/AdminCatalogPage';
+import { AdminComingSoonPage } from './pages/AdminComingSoonPage';
+import type { ProductResponse } from '@cafe-da-fisica/shared';
 
-export interface ProductFormData {
-    name: string;
-    price: number | '';
-    type: string;
-    isVegan: boolean;
-    quantityDiscount: string;
-    imageUrl: string;
-}
-
-interface ProductFormProps {
-    initialData?: ProductFormData;
-    onSubmit: (data: ProductFormData) => void;
-    onCancel?: () => void;
-    isEditing?: boolean;
-}
-
-export function ProductForm({
-    initialData,
-    onSubmit,
-    onCancel,
-    isEditing = false,
-}: ProductFormProps) {
-    const [name, setName] = useState(initialData?.name || '');
-    const [price, setPrice] = useState<number | ''>(initialData?.price ?? '');
-    const [type, setType] = useState(initialData?.type || '');
-    const [isVegan, setIsVegan] = useState(initialData?.isVegan ?? false);
-    const [quantityDiscount, setQuantityDiscount] = useState(
-        initialData?.quantityDiscount || ''
+function PlusIcon() {
+    return (
+        <svg
+        className="admin-actions__icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        aria-hidden="true"
+        >
+        <path d="M12 5v14M5 12h14" />
+        </svg>
     );
-    const [imageUrl, setImageUrl] = useState(initialData?.imageUrl || '');
+}
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        onSubmit({
-            name,
-            price: Number(price),
-                 type,
-                 isVegan,
-                 quantityDiscount,
-                 imageUrl,
+export default function AdminApp() {
+    const { session, login, logout } = useAdminSession();
+    const [section, navigate] = useAdminSection();
+    const loggedIn = session.kind === 'authenticated';
+
+    // Estados para controlar o formulário e qual produto está a ser editado
+    const [isFormOpen, setIsFormOpen] = useState(false);
+    const [editingProduct, setEditingProduct] = useState<ProductFormData | undefined>(undefined);
+
+    // Abrir formulário para CRIAR novo produto
+    const handleOpenCreate = () => {
+        setEditingProduct(undefined); // Limpa para vir vazio
+        setIsFormOpen(true);
+    };
+
+    // Abrir formulário para EDITAR um produto existente ao clicar nele no catálogo
+    const handleSelectProduct = (product: ProductResponse) => {
+        setEditingProduct({
+            name: product.name,
+            price: product.price,
+            type: product.type,
+            isVegan: product.vegan,
+            quantityDiscount: '', // Preenche com vazio caso não venha da API
+            imageUrl: '',         // Preenche com vazio caso não venha da API
         });
+        setIsFormOpen(true);
+    };
+
+    const handleSaveProduct = (data: ProductFormData) => {
+        if (editingProduct) {
+            console.log('Produto atualizado:', data);
+            alert(`Produto "${data.name}" atualizado com sucesso! (Simulação)`);
+        } else {
+            console.log('Novo produto criado:', data);
+            alert(`Produto "${data.name}" criado com sucesso! (Simulação)`);
+        }
+        setIsFormOpen(false);
+        setEditingProduct(undefined);
     };
 
     return (
-        <form onSubmit={handleSubmit} className="product-form-card">
-        <h2 className="product-form__title">
-        {isEditing ? 'Editar Produto' : 'Adicionar Novo Produto'}
-        </h2>
+        <div className="app">
+        <Header
+        subtitle="Painel Administrador"
+        start={loggedIn && <AdminMenu current={section} onNavigate={navigate} />}
+        >
+        {loggedIn && (
+            <div className="admin-actions">
+            {section === 'catalog' && !isFormOpen && (
+                <button className="admin-actions__add" onClick={handleOpenCreate}>
+                <PlusIcon />
+                Adicionar Produto
+                </button>
+            )}
+            <button className="admin-actions__logout" onClick={() => void logout()}>
+            Sair
+            </button>
+            </div>
+        )}
+        </Header>
 
-        <div className="product-form__group">
-        <label className="product-form__label" htmlFor="name">Nome</label>
-        <input
-        id="name"
-        type="text"
-        className="product-form__input"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="Ex: Café Expresso"
-        required
-        />
-        </div>
-
-        <div className="product-form__group">
-        <label className="product-form__label" htmlFor="price">Preço (R$)</label>
-        <input
-        id="price"
-        type="number"
-        step="0.01"
-        min="0"
-        className="product-form__input"
-        value={price}
-        onChange={(e) => setPrice(e.target.value === '' ? '' : Number(e.target.value))}
-        placeholder="0.00"
-        required
-        />
-        </div>
-
-        <div className="product-form__group">
-        <label className="product-form__label" htmlFor="type">Tipo</label>
-        <input
-        id="type"
-        type="text"
-        className="product-form__input"
-        value={type}
-        onChange={(e) => setType(e.target.value)}
-        placeholder="Ex: Bebidas, Sobremesas"
-        required
-        />
-        </div>
-
-        <div className="product-form__group product-form__checkbox-wrapper">
-        <label className="product-form__checkbox-label">
-        <input
-        type="checkbox"
-        checked={isVegan}
-        onChange={(e) => setIsVegan(e.target.checked)}
-        />
-        Produto Vegano
-        </label>
-        </div>
-
-        <div className="product-form__group">
-        <label className="product-form__label" htmlFor="quantityDiscount">Desconto por quantidade</label>
-        <input
-        id="quantityDiscount"
-        type="text"
-        className="product-form__input"
-        value={quantityDiscount}
-        onChange={(e) => setQuantityDiscount(e.target.value)}
-        placeholder="Ex: Leve 3 pague 2"
-        />
-        </div>
-
-        <div className="product-form__group">
-        <label className="product-form__label" htmlFor="imageUrl">URL da Imagem </label>
-        <input
-        id="imageUrl"
-        type="url"
-        className="product-form__input"
-        value={imageUrl}
-        onChange={(e) => setImageUrl(e.target.value)}
-        placeholder="https://exemplo.com/imagem.png"
-        />
-        {imageUrl && (
-            <div className="product-form__preview-box">
-            <span className="product-form__preview-text">Pré-visualização:</span>
-            <div className="product-form__preview-image-container">
-            <img
-            src={imageUrl}
-            alt="Preview do produto"
-            className="product-form__preview-img"
-            onError={(e) => {
-                (e.target as HTMLElement).style.display = 'none';
+        <main className="app__main">
+        {isFormOpen ? (
+            <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
+            <ProductForm
+            initialData={editingProduct}
+            onSubmit={handleSaveProduct}
+            onCancel={() => {
+                setIsFormOpen(false);
+                setEditingProduct(undefined);
             }}
+            isEditing={!!editingProduct}
             />
             </div>
-            </div>
+        ) : (
+            <>
+            {section === 'catalog' && (
+                <AdminCatalogPage onSelectProduct={handleSelectProduct} />
+            )}
+            {section === 'report' && (
+                <AdminComingSoonPage
+                title="Relatório"
+                description="Aqui vão aparecer os relatórios de pedidos e vendas."
+                />
+            )}
+            {section === 'settings' && (
+                <AdminComingSoonPage
+                title="Configurações"
+                description="Aqui vai ser possível ajustar o site, como o e-mail que recebe os avisos de novos pedidos."
+                />
+            )}
+            </>
         )}
-        </div>
+        </main>
 
-        <div className="product-form__actions">
-        {onCancel && (
-            <button type="button" onClick={onCancel} className="product-form__btn product-form__btn--secondary">
-            Cancelar
-            </button>
-        )}
-        <button type="submit" className="product-form__btn product-form__btn--primary">
-        {isEditing ? 'Salvar Alterações' : 'Criar Produto'}
-        </button>
+        <Footer />
+
+        {session.kind === 'anonymous' && <LoginDialog onLogin={login} />}
         </div>
-        </form>
     );
 }
