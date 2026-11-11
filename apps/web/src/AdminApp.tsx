@@ -1,4 +1,3 @@
-iimport { useState } from 'react';
 import './App.css';
 import './AdminApp.css';
 import { AdminMenu } from './components/AdminMenu';
@@ -12,6 +11,7 @@ import { useAdminSession } from './hooks/useAdminSession';
 import { AdminCatalogPage } from './pages/AdminCatalogPage';
 import { AdminComingSoonPage } from './pages/AdminComingSoonPage';
 import type { ProductResponse } from '@cafe-da-fisica/shared';
+import { AdminSettingsPage } from './pages/AdminSettingsPage';
 
 function PlusIcon() {
     return (
@@ -29,6 +29,10 @@ function PlusIcon() {
     );
 }
 
+// Admin panel at /admin (see Root.tsx): the public menu with admin actions in the header, and a
+// side menu to the other admin pages. Until someone logs in, a login card covers the page. The
+// menu behind it is public anyway; what actually protects admin data is the API, which checks the
+// session on every admin route.
 export default function AdminApp() {
     const { session, login, logout } = useAdminSession();
     const [section, navigate] = useAdminSection();
@@ -114,13 +118,9 @@ export default function AdminApp() {
                 description="Aqui vão aparecer os relatórios de pedidos e vendas."
                 />
             )}
-            {section === 'settings' && (
-                <AdminComingSoonPage
-                title="Configurações"
-                description="Aqui vai ser possível ajustar o site, como o e-mail que recebe os avisos de novos pedidos."
-                />
-            )}
-            </>
+            {section === 'settings' && <AdminSettingsPage />
+            }
+            </>     
         )}
         </main>
 

@@ -17,7 +17,13 @@ export function Header({ subtitle, start, children }: HeaderProps) {
             <div className="app__header-start">
                 {start}
                 <div className="app__brand">
-                    <h1>Café da Física</h1>
+                    <h1>
+                        <img
+                            className="app__logo"
+                            src="/logo-cafe-da-fisica.png"
+                            alt="Café da Física"
+                        />
+                    </h1>
                     {subtitle && <p className="app__subtitle">{subtitle}</p>}
                 </div>
             </div>

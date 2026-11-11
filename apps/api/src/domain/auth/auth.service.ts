@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { randomUUID } from 'node:crypto';
 import { Repository } from 'typeorm';
 import { Admin } from '../admins/admin.entity.js';
-import type { LoginDto } from './auth.dto.js';
+import type { ChangeAdminPasswordDto, LoginDto } from './auth.dto.js';
 import { hashPassword, verifyPassword } from './password.js';
 import type { SessionPayload } from './session.js';
 
@@ -39,6 +39,14 @@ export class AuthService {
 
         const payload: SessionPayload = { sub: String(admin.id) };
         return { admin: toAdminResponse(admin), token: await this.jwtService.signAsync(payload) };
+    }
+
+    async changePassword(admin: Admin, dto: ChangeAdminPasswordDto): Promise<void> {
+        const passwordMatches = await verifyPassword(dto.currentPassword, admin.passwordHash);
+        if (!passwordMatches) throw new UnauthorizedException('Current password is incorrect');
+
+        const passwordHash = await hashPassword(dto.newPassword);
+        await this.adminsRepository.update(admin.id, { passwordHash });
     }
 
     /**

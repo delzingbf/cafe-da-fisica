@@ -21,9 +21,10 @@
     gap: 4px;
 }
 
-.app__header h1 {
-    font-size: 2rem;
-    color: var(--color-accent);
+.app__logo {
+    display: block;
+    width: min(210px, 38vw);
+    height: auto;
 }
 
 .app__subtitle {

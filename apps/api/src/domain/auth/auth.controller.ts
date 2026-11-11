@@ -6,7 +6,7 @@ import type { CookieOptions, Response } from 'express';
 import type { Env } from '../../infrastructure/config/env.js';
 import type { Admin } from '../admins/admin.entity.js';
 import { AdminGuard, CurrentAdmin } from './admin.guard.js';
-import { LoginDto } from './auth.dto.js';
+import { ChangeAdminPasswordDto, LoginDto } from './auth.dto.js';
 import { AuthService, toAdminResponse } from './auth.service.js';
 import { SESSION_COOKIE, SESSION_TTL_SECONDS } from './session.js';
 
@@ -53,5 +53,15 @@ export class AuthController {
     @UseGuards(AdminGuard)
     me(@CurrentAdmin() admin: Admin): AdminResponse {
         return toAdminResponse(admin);
+    }
+
+    @Post('password')
+    @HttpCode(204)
+    @UseGuards(AdminGuard, ThrottlerGuard)
+    async changePassword(
+        @CurrentAdmin() admin: Admin,
+        @Body() dto: ChangeAdminPasswordDto,
+    ): Promise<void> {
+        await this.authService.changePassword(admin, dto);
     }
 }

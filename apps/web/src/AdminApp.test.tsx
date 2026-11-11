@@ -48,7 +48,12 @@ describe('AdminApp', () => {
     });
 
     const loggedIn = () =>
-        mockApi({ 'GET /api/auth/me': () => Response.json(admin), 'GET /api/products': products });
+        mockApi({
+            'GET /api/auth/me': () => Response.json(admin),
+            'GET /api/products': products,
+            'GET /api/settings': () =>
+                Response.json({ orderNotificationEmail: 'pedidos@example.com' }),
+        });
 
     it('shows the login card, and no admin actions, without a session', async () => {
         mockApi({ 'GET /api/auth/me': unauthorized, 'GET /api/products': products });
@@ -94,6 +99,68 @@ describe('AdminApp', () => {
 
         expect(await screen.findByRole('button', { name: 'Adicionar Produto' })).toBeTruthy();
         expect(screen.queryByRole('heading', { name: 'Configurações' })).toBeNull();
+    });
+
+    it('updates the order notification email and changes the admin password', async () => {
+        const fetchMock = mockApi({
+            'GET /api/auth/me': () => Response.json(admin),
+            'GET /api/products': products,
+            'GET /api/settings': () =>
+                Response.json({ orderNotificationEmail: 'pedidos@example.com' }),
+            'PUT /api/settings/order-notification-email': () =>
+                Response.json({ confirmationEmailSent: true }),
+            'POST /api/auth/password': () => new Response(null, { status: 204 }),
+        });
+        window.history.replaceState(null, '', '/admin/configuracoes');
+        render(<AdminApp />);
+
+        const emailInput = await screen.findByLabelText('E-mail');
+        fireEvent.change(emailInput, { target: { value: 'Novo@Exemplo.com' } });
+        fireEvent.click(screen.getByRole('button', { name: 'Salvar e-mail' }));
+
+        expect(
+            await screen.findByText(
+                'E-mail atualizado. Enviamos uma confirmação ao endereço informado.',
+            ),
+        ).toBeTruthy();
+        expect(fetchMock).toHaveBeenCalledWith(
+            '/api/settings/order-notification-email',
+            expect.objectContaining({
+                method: 'PUT',
+                body: JSON.stringify({ email: 'novo@exemplo.com' }),
+            }),
+        );
+
+        fireEvent.change(screen.getByLabelText('Senha atual'), {
+            target: { value: 'senha-atual' },
+        });
+        fireEvent.change(screen.getByLabelText('Nova senha'), {
+            target: { value: 'senha-nova-segura' },
+        });
+        fireEvent.change(screen.getByLabelText('Confirmar nova senha'), {
+            target: { value: 'senha-nova-segura' },
+        });
+        fireEvent.click(screen.getByRole('button', { name: 'Trocar senha' }));
+
+        expect(await screen.findByText('Senha alterada com sucesso.')).toBeTruthy();
+        expect(fetchMock).toHaveBeenCalledWith(
+            '/api/auth/password',
+            expect.objectContaining({
+                method: 'POST',
+                body: JSON.stringify({
+                    currentPassword: 'senha-atual',
+                    newPassword: 'senha-nova-segura',
+                }),
+            }),
+        );
+        expect(screen.getByText('Esta área é apenas visual e ainda não é funcional.')).toBeTruthy();
+        expect(screen.queryByRole('button', { name: /aparência|estética/i })).toBeNull();
+        expect(screen.getByRole('img', { name: 'Café da Física' })).toBeTruthy();
+        expect(screen.getByText('#E2D9BC')).toBeTruthy();
+        expect(screen.getByText('#80ABD7')).toBeTruthy();
+        expect(
+            screen.getByRole('img', { name: 'Logo da gestão atual do Café da Física' }),
+        ).toBeTruthy();
     });
 
     it('skips the login when a session already exists', async () => {

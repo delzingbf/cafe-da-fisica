@@ -97,8 +97,11 @@ Open http://localhost:5173 — the home page calls `GET /api/health` and shows w
 
 The admin panel lives at http://localhost:5173/admin. It shows the same menu as the public site, plus the
 admin tools: a side menu (the ☰ button next to the title) with **Catálogo**, **Relatório** and
-**Configurações**, and an **Adicionar Produto** button in the header. For now Relatório,
-Configurações and Adicionar Produto are placeholders.
+**Configurações**, and an **Adicionar Produto** button in the header. Configurações lets an admin
+change the order notification email and their password; its appearance section is a non-functional
+visual preview of the current management logo and palette. The current brand colors are defined as
+CSS tokens in `apps/web/src/index.css`, and the logo is served from `apps/web/public/`.
+Relatório is placeholder.
 
 ### Creating a test admin account
 
