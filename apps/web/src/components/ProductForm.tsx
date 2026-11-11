@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './ProductForm.css';
+import './styles/ProductForm.css';
 
 export interface ProductFormData {
     name: string;
