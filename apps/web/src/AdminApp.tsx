@@ -111,7 +111,8 @@ export default function AdminApp() {
         ) : (
             <>
             {section === 'catalog' && (
-                <AdminCatalogPage onSelectProduct={handleSelectProduct} />
+                <AdminCatalogPage
+                />
             )}
             {section === 'report' && (
                 <AdminComingSoonPage
