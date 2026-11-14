@@ -10,7 +10,7 @@ import type { ProductFormData } from './components/ProductForm';
 import { useAdminSection } from './hooks/useAdminSection';
 import { useAdminSession } from './hooks/useAdminSession';
 import { AdminCatalogPage } from './pages/AdminCatalogPage';
-import { AdminComingSoonPage } from './pages/AdminComingSoonPage';
+import { AdminReportPage } from './pages/AdminReportPage';
 import type { ProductResponse } from '@cafe-da-fisica/shared';
 import { AdminSettingsPage } from './pages/AdminSettingsPage';
 
@@ -114,12 +114,7 @@ export default function AdminApp() {
                 <AdminCatalogPage
                 />
             )}
-            {section === 'report' && (
-                <AdminComingSoonPage
-                title="Relatório"
-                description="Aqui vão aparecer os relatórios de pedidos e vendas."
-                />
-            )}
+            {section === 'report' && <AdminReportPage />}
             {section === 'settings' && <AdminSettingsPage />
             }
             </>     
