@@ -30,7 +30,7 @@ Tooling: npm workspaces, TypeScript 6, oxlint, Prettier.
 │   │   │   ├── infrastructure/   technical support used by the domain
 │   │   │   │   ├── config/       env schema + validation (zod)
 │   │   │   │   ├── database/     DatabaseModule, data-source.ts, migrations/, seed.ts
-│   │   │   │   ├── mail/         MailService (Resend) for transactional emails
+│   │   │   │   ├── mail/         MailService (SMTP, Gmail by default) for transactional emails
 │   │   │   │   └── health/       GET /api/health
 │   │   │   └── common/           filters, guards, interceptors, pipes
 │   │   └── test/                 e2e specs (*.e2e-spec.ts) + database test setup
@@ -190,14 +190,17 @@ Run a script in a single workspace with `-w`, e.g. `npm run test:watch -w apps/w
 
 ## Environment variables
 
-| Variable            | Where           | Purpose                                                |
-| ------------------- | --------------- | ------------------------------------------------------ |
-| `POSTGRES_*`        | `.env`          | Credentials/port for the Docker PostgreSQL             |
-| `DATABASE_URL`      | `apps/api/.env` | Connection string used by TypeORM                      |
-| `TEST_DATABASE_URL` | `apps/api/.env` | Database for `test:int` / `test:e2e` (Vitest only)     |
-| `PORT`              | `apps/api/.env` | API port (default 3000)                                |
-| `CORS_ORIGIN`       | `apps/api/.env` | Allowed browser origin (default the Vite dev URL)      |
-| `RESEND_API_KEY`    | `apps/api/.env` | Resend key; unset → emails are only logged             |
-| `EMAIL_FROM`        | `apps/api/.env` | Sender of outgoing emails                              |
-| `JWT_SECRET`        | `apps/api/.env` | Signs the admin session cookie; required in production |
-| `VITE_API_URL`      | `apps/web/.env` | API base URL for the browser (default `/api`)          |
+| Variable            | Where           | Purpose                                                          |
+| ------------------- | --------------- | ---------------------------------------------------------------- |
+| `POSTGRES_*`        | `.env`          | Credentials/port for the Docker PostgreSQL                       |
+| `DATABASE_URL`      | `apps/api/.env` | Connection string used by TypeORM                                |
+| `TEST_DATABASE_URL` | `apps/api/.env` | Database for `test:int` / `test:e2e` (Vitest only)               |
+| `PORT`              | `apps/api/.env` | API port (default 3000)                                          |
+| `CORS_ORIGIN`       | `apps/api/.env` | Allowed browser origin (default the Vite dev URL)                |
+| `SMTP_HOST`         | `apps/api/.env` | SMTP server (default `smtp.gmail.com`)                           |
+| `SMTP_PORT`         | `apps/api/.env` | 465 (TLS, default) or 587 (STARTTLS)                             |
+| `SMTP_USER`         | `apps/api/.env` | Email account that sends; unset → emails are only logged         |
+| `SMTP_PASSWORD`     | `apps/api/.env` | For Gmail, an app password (not the account password)            |
+| `EMAIL_FROM`        | `apps/api/.env` | Sender of outgoing emails (default `Café da Física <SMTP_USER>`) |
+| `JWT_SECRET`        | `apps/api/.env` | Signs the admin session cookie; required in production           |
+| `VITE_API_URL`      | `apps/web/.env` | API base URL for the browser (default `/api`)                    |
