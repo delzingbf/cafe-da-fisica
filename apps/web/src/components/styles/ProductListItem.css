@@ -73,3 +73,49 @@
     color: var(--color-accent);
     white-space: nowrap;
 }
+
+/* Botões do admin no fim da linha (lixeira / Restaurar). Ficam acima do ::after que cobre a linha,
+   senão o clique abriria o produto. Aparecem com o mouse em cima ou com o foco do teclado. */
+.product-row__acoes {
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+
+.product-row:hover .product-row__acoes,
+.product-row:focus-within .product-row__acoes,
+.product-row--arquivado .product-row__acoes {
+    opacity: 1;
+}
+
+/* Telas de toque não têm "mouse em cima": os botões ficam sempre visíveis */
+@media (hover: none) {
+    .product-row__acoes {
+        opacity: 1;
+    }
+}
+
+/* Produto removido do cardápio (só aparece para o admin, em "Mostrar removidos") */
+.product-row--arquivado {
+    border-style: dashed;
+}
+
+.product-row--arquivado > :not(.product-row__acoes) {
+    opacity: 0.55;
+}
+
+.product-row__removido {
+    margin: 0;
+    flex-shrink: 0;
+    font-size: 0.875rem;
+    font-weight: bold;
+    color: var(--color-text-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .product-row__acoes {
+        transition: none;
+    }
+}

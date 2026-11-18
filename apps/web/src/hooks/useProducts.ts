@@ -7,8 +7,11 @@ export type ProductsState =
     | { kind: 'ready'; products: ProductResponse[] }
     | { kind: 'error'; message: string };
 
-/** Fetches the menu (`GET /api/products`) once on mount. */
-export function useProducts(): ProductsState {
+/**
+ * Fetches the menu (`GET /api/products`) on mount, and again whenever `version` changes (e.g. after
+ * the admin removes a product). While refetching, the previous list stays on screen.
+ */
+export function useProducts(version = 0): ProductsState {
     const [state, setState] = useState<ProductsState>({ kind: 'loading' });
 
     useEffect(() => {
@@ -25,7 +28,7 @@ export function useProducts(): ProductsState {
             });
 
         return () => controller.abort();
-    }, []);
+    }, [version]);
 
     return state;
 }
