@@ -1,10 +1,12 @@
 import {
+    Body,
     Controller,
     Delete,
     Get,
     HttpCode,
     Param,
     ParseIntPipe,
+    Patch,
     Post,
     Query,
     UseGuards,
@@ -12,7 +14,7 @@ import {
 import type { ProductResponse } from '@cafe-da-fisica/shared';
 import { AdminGuard } from '../auth/admin.guard.js';
 import { ProductsService } from './products.service.js';
-import type { FindAllParameters } from './products.dto.js';
+import { CreateProductDto, UpdateProductDto, type FindAllParameters } from './products.dto.js';
 
 @Controller('products')
 export class ProductsController {
@@ -31,6 +33,21 @@ export class ProductsController {
     @UseGuards(AdminGuard)
     findArchived(): Promise<ProductResponse[]> {
         return this.productsService.findArchived();
+    }
+
+    @Post()
+    @UseGuards(AdminGuard)
+    create(@Body() dto: CreateProductDto): Promise<ProductResponse> {
+        return this.productsService.create(dto);
+    }
+
+    @Patch(':id')
+    @UseGuards(AdminGuard)
+    update(
+        @Param('id', ParseIntPipe) id: number,
+        @Body() dto: UpdateProductDto,
+    ): Promise<ProductResponse> {
+        return this.productsService.update(id, dto);
     }
 
     // Archives instead of deleting: see ProductsService.archive.

@@ -119,7 +119,147 @@ describe('Products (e2e)', () => {
         expect(await menuNames()).toEqual(['Esfiha']);
     });
 
+    describe('POST /products', () => {
+        const brownie = { name: 'Brownie', price: 8.5, type: 'sweet' };
+
+        it('creates a product and returns it', async () => {
+            const response = await api()
+                .post(`/${API_PREFIX}/products`)
+                .set('Cookie', adminCookie)
+                .send({
+                    name: '  Bolo de cenoura ',
+                    price: 12.9,
+                    type: 'sweet',
+                    vegan: true,
+                    available: false,
+                    imageUrl: 'https://example.com/bolo.png',
+                })
+                .expect(201);
+
+            const expected = {
+                name: 'Bolo de cenoura',
+                price: 12.9,
+                type: 'sweet',
+                vegan: true,
+                available: false,
+                imageUrl: 'https://example.com/bolo.png',
+            };
+            expect(response.body).toEqual({ id: expect.any(Number), ...expected });
+            const saved = await testDataSource
+                .getRepository(Product)
+                .findOneByOrFail({ id: response.body.id });
+            expect(saved).toMatchObject({ ...expected, shown: true });
+        });
+
+        it('defaults to available, not vegan and without an image', async () => {
+            const response = await api()
+                .post(`/${API_PREFIX}/products`)
+                .set('Cookie', adminCookie)
+                .send({ ...brownie, imageUrl: '  ' })
+                .expect(201);
+
+            expect(response.body).toMatchObject({ available: true, vegan: false, imageUrl: null });
+            expect(await menuNames()).toEqual(['Brownie']);
+        });
+
+        it.each([
+            ['an empty name', { name: '   ' }],
+            ['no price', { price: undefined }],
+            ['a price of zero', { price: 0 }],
+            ['a negative price', { price: -1 }],
+            ['more than two decimals', { price: 8.505 }],
+            ['a price as text', { price: '8,50' }],
+            ['an unknown type', { type: 'drink' }],
+            ['a vegan flag that is not a boolean', { vegan: 'yes' }],
+            ['an image URL that is not http(s)', { imageUrl: 'javascript:alert(1)' }],
+        ])('rejects %s', async (_case, overrides) => {
+            await api()
+                .post(`/${API_PREFIX}/products`)
+                .set('Cookie', adminCookie)
+                .send({ ...brownie, ...overrides })
+                .expect(400);
+
+            expect(await testDataSource.getRepository(Product).count()).toBe(0);
+        });
+    });
+
+    describe('PATCH /products/:id', () => {
+        it('changes only the fields sent', async () => {
+            const brownie = await createProduct({
+                vegan: true,
+                imageUrl: 'https://example.com/brownie.png',
+            });
+
+            const response = await api()
+                .patch(`/${API_PREFIX}/products/${brownie.id}`)
+                .set('Cookie', adminCookie)
+                .send({ price: 9.5, available: false })
+                .expect(200);
+
+            const expected = {
+                id: brownie.id,
+                name: 'Brownie',
+                price: 9.5,
+                type: 'sweet',
+                vegan: true,
+                available: false,
+                imageUrl: 'https://example.com/brownie.png',
+            };
+            expect(response.body).toEqual(expected);
+            const saved = await testDataSource
+                .getRepository(Product)
+                .findOneByOrFail({ id: brownie.id });
+            expect(saved).toMatchObject(expected);
+        });
+
+        it('removes the image when imageUrl is null', async () => {
+            const brownie = await createProduct({ imageUrl: 'https://example.com/brownie.png' });
+
+            const response = await api()
+                .patch(`/${API_PREFIX}/products/${brownie.id}`)
+                .set('Cookie', adminCookie)
+                .send({ imageUrl: null })
+                .expect(200);
+
+            expect(response.body.imageUrl).toBeNull();
+        });
+
+        it('edits an archived product without putting it back on the menu', async () => {
+            const esfiha = await createProduct({ name: 'Esfiha', shown: false });
+
+            await api()
+                .patch(`/${API_PREFIX}/products/${esfiha.id}`)
+                .set('Cookie', adminCookie)
+                .send({ name: 'Esfiha de carne' })
+                .expect(200);
+
+            expect(await menuNames()).toEqual([]);
+        });
+
+        it.each([
+            ['a null name', { name: null }],
+            ['a null price', { price: null }],
+            ['a price of zero', { price: 0 }],
+            ['an unknown type', { type: 'drink' }],
+        ])('rejects %s and keeps the product', async (_case, body) => {
+            const brownie = await createProduct();
+
+            await api()
+                .patch(`/${API_PREFIX}/products/${brownie.id}`)
+                .set('Cookie', adminCookie)
+                .send(body)
+                .expect(400);
+
+            const saved = await testDataSource
+                .getRepository(Product)
+                .findOneByOrFail({ id: brownie.id });
+            expect(saved).toMatchObject({ name: 'Brownie', price: 8, type: 'sweet' });
+        });
+    });
+
     it.each([
+        ['create a product', 'post', '/products'],
+        ['edit a product', 'patch', '/products/1'],
         ['archive', 'delete', '/products/1'],
         ['restore', 'post', '/products/1/restore'],
         ['list archived products', 'get', '/products/archived'],
@@ -128,6 +268,7 @@ describe('Products (e2e)', () => {
     });
 
     it.each([
+        ['edit', 'patch', '/products/999'],
         ['archive', 'delete', '/products/999'],
         ['restore', 'post', '/products/999/restore'],
     ] as const)('cannot %s a product that does not exist', async (_case, method, path) => {
