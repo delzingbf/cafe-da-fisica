@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { AdminResponse, LoginRequest } from '@cafe-da-fisica/shared';
-import { api } from '../api/client';
+import { ApiError, api, onUnauthorized } from '../api/client';
 
 export type AdminSession =
     { kind: 'checking' } | { kind: 'anonymous' } | { kind: 'authenticated'; admin: AdminResponse };
@@ -24,6 +24,22 @@ export function useAdminSession() {
 
         return () => controller.abort();
     }, []);
+
+    // A 401 from an admin route usually means the session expired while the page was open, but not
+    // always: a wrong current password in "Trocar senha" is a 401 too. So ask the API again, and
+    // only show the login when the session is really gone.
+    useEffect(
+        () =>
+            onUnauthorized((path) => {
+                if (path.startsWith('/auth/me') || path.startsWith('/auth/login')) return;
+                api.get<AdminResponse>('/auth/me').catch((error: unknown) => {
+                    if (error instanceof ApiError && error.status === 401) {
+                        setSession({ kind: 'anonymous' });
+                    }
+                });
+            }),
+        [],
+    );
 
     /** Rejects with an ApiError on failure: 401 wrong email/password, 429 too many attempts. */
     const login = useCallback(async (credentials: LoginRequest) => {
