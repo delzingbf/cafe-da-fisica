@@ -30,7 +30,6 @@
     -webkit-text-fill-color: var(--color-text);
     caret-color: var(--color-text);
 }
-.checkout-columns { display: grid; grid-template-columns: 1fr 1fr; align-items: start; gap: 12px; }
 .checkout-options { display: flex; flex-wrap: wrap; gap: 8px; }
 .checkout-options label { position: relative; cursor: pointer; }
 .checkout-options input { position: absolute; opacity: 0; width: 1px; height: 1px; }
@@ -42,10 +41,11 @@
 .checkout-field input[aria-invalid='true'] { border-color: var(--color-error); }
 .checkout-note, .checkout-feedback { margin: 0; font-size: .9rem; }
 .checkout-feedback { padding: 12px; border: 1px solid var(--color-ok); border-radius: var(--radius); }
+.checkout-feedback--error { border-color: var(--color-error); color: var(--color-error); }
 .checkout-actions { display: flex; justify-content: space-between; gap: 12px; }
+.checkout-actions--end { justify-content: flex-end; }
 .checkout-actions .checkout-primary { background: var(--color-ok); color: #fff; }
 @media (max-width: 520px) {
     .checkout-modal { padding: 16px; }
-    .checkout-columns { grid-template-columns: 1fr; }
     .checkout-actions { flex-direction: column; }
 }
