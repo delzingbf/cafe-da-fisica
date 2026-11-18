@@ -48,12 +48,14 @@
     }
 }
 
-/* Visualização em lista: uma linha por produto */
+/* Visualização em lista: uma linha por produto, na largura da barra de pesquisa */
 .catalogo-lista {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin: 20px 0 0;
+    width: 100%;
+    max-width: var(--catalog-column-width);
+    margin: 20px auto 0;
     padding: 0;
     list-style: none;
 }
