@@ -6,6 +6,13 @@ type EmailContent = Pick<MailMessage, 'subject' | 'html' | 'text'>;
 
 const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 
+// The café is in Porto Alegre; without a fixed zone the server's own zone would leak into emails.
+const dateTime = new Intl.DateTimeFormat('pt-BR', {
+    dateStyle: 'full',
+    timeStyle: 'short',
+    timeZone: 'America/Sao_Paulo',
+});
+
 const PAYMENT_LABELS: Record<OrderPaymentOption, string> = { pix: 'Pix', cash: 'Dinheiro' };
 
 // Customer input ends up in the HTML, so it must be escaped.
@@ -62,6 +69,7 @@ function orderDetails(order: Order) {
         `Total: ${brl.format(orderTotal(order))}`,
         `Pagamento: ${PAYMENT_LABELS[order.paymentOption]}`,
         delivery,
+        `Data e horário: ${dateTime.format(order.scheduledAt)}`,
     ];
 
     return {

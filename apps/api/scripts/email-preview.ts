@@ -23,6 +23,7 @@ const order = {
     paymentOption: 'pix',
     deliveryMethod: 'delivery',
     deliveryLocation: 'Sala 101, Instituto de Física',
+    scheduledAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
     items: [
         { quantity: 2, unitPrice: 4, product: { name: 'Térmica de café' } },
         { quantity: 1, unitPrice: 8, product: { name: 'Bolo de cenoura' } },
