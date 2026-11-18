@@ -39,11 +39,14 @@ describe('orders schema (integration)', () => {
         return products.save(products.create({ name: 'Café coado', price: 4.5, ...overrides }));
     }
 
+    const scheduledAt = new Date('2030-01-15T13:30:00Z');
+
     async function createOrder(items: Array<{ product: Product; quantity: number }>) {
         return orders.save(
             orders.create({
                 customerName: 'Ana',
                 customerEmail: 'ana@example.com',
+                scheduledAt,
                 items: items.map(({ product, quantity }) =>
                     Object.assign(new OrderItem(), {
                         productId: product.id,
@@ -68,6 +71,7 @@ describe('orders schema (integration)', () => {
         expect(saved.paymentOption).toBe('pix');
         expect(saved.deliveryMethod).toBe('delivery');
         expect(saved.createdAt).toBeInstanceOf(Date);
+        expect(saved.scheduledAt).toEqual(scheduledAt);
         expect(saved.items).toEqual([
             expect.objectContaining({ productId: coffee.id, quantity: 2, unitPrice: 4.5 }),
         ]);
@@ -114,7 +118,7 @@ describe('orders schema (integration)', () => {
         ['Ana@Example.com', /CHK_orders_customer_email_lowercase/],
     ])('rejects the customer email %p', async (customerEmail, constraint) => {
         await expect(
-            orders.save(orders.create({ customerName: 'Ana', customerEmail })),
+            orders.save(orders.create({ customerName: 'Ana', customerEmail, scheduledAt })),
         ).rejects.toThrow(constraint);
     });
 

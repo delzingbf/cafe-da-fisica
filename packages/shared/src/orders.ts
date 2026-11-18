@@ -14,3 +14,28 @@ export interface OrderResponse {
     status: OrderStatus;
     total: number;
 }
+
+export interface CreateOrderItemRequest {
+    productId: number;
+    quantity: number;
+}
+
+/** Body of `POST /orders`. */
+export interface CreateOrderRequest {
+    customerName: string;
+    customerEmail: string;
+    paymentOption: OrderPaymentOption;
+    deliveryMethod: OrderDeliveryMethod;
+    /** Required when `deliveryMethod` is `'delivery'`, ignored otherwise. */
+    deliveryLocation?: string;
+    /** When the customer wants the order, as an ISO 8601 string. Must be in the future. */
+    scheduledAt: string;
+    items: CreateOrderItemRequest[];
+}
+
+/** Body of the 400 response when some ordered products can no longer be ordered. */
+export interface ProductsUnavailableError {
+    statusCode: 400;
+    message: string;
+    unavailableProductIds: number[];
+}

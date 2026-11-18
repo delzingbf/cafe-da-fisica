@@ -1,4 +1,4 @@
-import type { OrderResponse } from '@cafe-da-fisica/shared';
+import type { OrderResponse, ProductsUnavailableError } from '@cafe-da-fisica/shared';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
@@ -32,7 +32,12 @@ export class OrdersService {
 
         const unavailable = productIds.filter((id) => !productsById.has(id));
         if (unavailable.length > 0) {
-            throw new BadRequestException(`Products unavailable: ${unavailable.join(', ')}`);
+            // The ids let the frontend say which cart items to remove (see ProductsUnavailableError).
+            throw new BadRequestException({
+                statusCode: 400,
+                message: `Products unavailable: ${unavailable.join(', ')}`,
+                unavailableProductIds: unavailable,
+            } satisfies ProductsUnavailableError);
         }
 
         // `save` runs in a transaction: the order and its items are inserted together or not at all.
@@ -43,6 +48,7 @@ export class OrdersService {
                 paymentOption: dto.paymentOption,
                 deliveryMethod: dto.deliveryMethod,
                 deliveryLocation: dto.deliveryMethod === 'delivery' ? dto.deliveryLocation : null,
+                scheduledAt: dto.scheduledAt,
                 items: dto.items.map((item) =>
                     Object.assign(new OrderItem(), {
                         productId: item.productId,
