@@ -1,6 +1,6 @@
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
-import type { AdminResponse } from '@cafe-da-fisica/shared';
+import type { AdminResponse, ProductResponse } from '@cafe-da-fisica/shared';
 import AdminApp from './AdminApp';
 
 const admin: AdminResponse = { id: 1, email: 'admin@example.com' };
@@ -211,6 +211,100 @@ describe('AdminApp', () => {
         expect((await screen.findByRole('alert')).textContent).toBe(message);
         expect((screen.getByLabelText('Senha') as HTMLInputElement).value).toBe('');
         expect(screen.getByRole('dialog')).toBeTruthy();
+    });
+
+    describe('removing products', () => {
+        const brownie: ProductResponse = {
+            id: 7,
+            name: 'Brownie',
+            price: 8,
+            available: true,
+            type: 'sweet',
+            vegan: false,
+            imageUrl: null,
+        };
+        const bolo: ProductResponse = { ...brownie, id: 3, name: 'Bolo de cenoura' };
+
+        /** A fake API that really moves products between the menu and the removed list. */
+        function catalogApi() {
+            let menu = [bolo, brownie];
+            let removed: ProductResponse[] = [];
+            const move = (id: number, toMenu: boolean) => {
+                const product = [...menu, ...removed].find((p) => p.id === id)!;
+                menu = menu.filter((p) => p.id !== id);
+                removed = removed.filter((p) => p.id !== id);
+                (toMenu ? menu : removed).push(product);
+                return new Response(null, { status: 204 });
+            };
+            return mockApi({
+                'GET /api/auth/me': () => Response.json(admin),
+                'GET /api/products': () => Response.json(menu),
+                'GET /api/products/archived': () => Response.json(removed),
+                'DELETE /api/products/7': () => move(7, false),
+                'POST /api/products/7/restore': () => move(7, true),
+            });
+        }
+
+        it('removes a product after confirming, and restores it from "Mostrar removidos"', async () => {
+            const fetchMock = catalogApi();
+            render(<AdminApp />);
+
+            fireEvent.click(await screen.findByRole('button', { name: 'Remover Brownie' }));
+            const dialog = screen.getByRole('dialog', { name: 'Remover produto' });
+            expect(within(dialog).getByText('Remover “Brownie” do cardápio?')).toBeTruthy();
+            fireEvent.click(within(dialog).getByRole('button', { name: 'Remover' }));
+
+            await waitFor(() =>
+                expect(screen.queryByRole('button', { name: 'Brownie' })).toBeNull(),
+            );
+            expect(fetchMock).toHaveBeenCalledWith(
+                '/api/products/7',
+                expect.objectContaining({ method: 'DELETE' }),
+            );
+            expect(screen.getByText('Brownie removido do cardápio')).toBeTruthy();
+            expect(screen.queryByRole('dialog')).toBeNull();
+            expect(screen.getByRole('button', { name: 'Bolo de cenoura' })).toBeTruthy();
+
+            fireEvent.click(screen.getByRole('button', { name: 'Mostrar removidos' }));
+            expect(await screen.findByRole('button', { name: 'Brownie' })).toBeTruthy();
+            expect(screen.getByText('Removido')).toBeTruthy();
+
+            fireEvent.click(screen.getByRole('button', { name: 'Restaurar' }));
+
+            await waitFor(() => expect(screen.queryByText('Removido')).toBeNull());
+            expect(screen.getByRole('button', { name: 'Brownie' })).toBeTruthy();
+            expect(screen.getByText('Brownie restaurado no cardápio')).toBeTruthy();
+        });
+
+        it('keeps the product when the removal is cancelled', async () => {
+            const fetchMock = catalogApi();
+            render(<AdminApp />);
+
+            fireEvent.click(await screen.findByRole('button', { name: 'Remover Brownie' }));
+            fireEvent.click(screen.getByRole('button', { name: 'Cancelar' }));
+
+            expect(screen.queryByRole('dialog')).toBeNull();
+            expect(screen.getByRole('button', { name: 'Brownie' })).toBeTruthy();
+            expect(fetchMock).not.toHaveBeenCalledWith('/api/products/7', expect.anything());
+        });
+
+        it('explains a failed removal and keeps the dialog open', async () => {
+            mockApi({
+                'GET /api/auth/me': () => Response.json(admin),
+                'GET /api/products': () => Response.json([brownie]),
+                'DELETE /api/products/7': () => new Response(null, { status: 500 }),
+            });
+            render(<AdminApp />);
+
+            fireEvent.click(await screen.findByRole('button', { name: 'Remover Brownie' }));
+            fireEvent.click(screen.getByRole('button', { name: 'Remover' }));
+
+            expect((await screen.findByRole('alert')).textContent).toBe(
+                'Não foi possível remover. Verifique sua conexão e tente de novo.',
+            );
+            expect(screen.getByRole('dialog', { name: 'Remover produto' })).toBeTruthy();
+            expect(screen.getByRole('button', { name: 'Brownie' })).toBeTruthy();
+        });
     });
 
     it('logs out back to the login card', async () => {
