@@ -10,22 +10,21 @@ import type { ProductFormData } from './components/ProductForm';
 import { useAdminSection } from './hooks/useAdminSection';
 import { useAdminSession } from './hooks/useAdminSession';
 import { AdminCatalogPage } from './pages/AdminCatalogPage';
-import { AdminComingSoonPage } from './pages/AdminComingSoonPage';
-import type { ProductResponse } from '@cafe-da-fisica/shared';
+import { AdminReportPage } from './pages/AdminReportPage';
 import { AdminSettingsPage } from './pages/AdminSettingsPage';
 
 function PlusIcon() {
     return (
         <svg
-        className="admin-actions__icon"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        aria-hidden="true"
+            className="admin-actions__icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            aria-hidden="true"
         >
-        <path d="M12 5v14M5 12h14" />
+            <path d="M12 5v14M5 12h14" />
         </svg>
     );
 }
@@ -50,17 +49,17 @@ export default function AdminApp() {
     };
 
     // Abrir formulário para EDITAR um produto existente ao clicar nele no catálogo
-    const handleSelectProduct = (product: ProductResponse) => {
-        setEditingProduct({
-            name: product.name,
-            price: product.price,
-            type: product.type,
-            isVegan: product.vegan,
-            quantityDiscount: '', // Preenche com vazio caso não venha da API
-            imageUrl: '',         // Preenche com vazio caso não venha da API
-        });
-        setIsFormOpen(true);
-    };
+    // const handleSelectProduct = (product: ProductResponse) => {
+    //     setEditingProduct({
+    //         name: product.name,
+    //         price: product.price,
+    //         type: product.type,
+    //         isVegan: product.vegan,
+    //         quantityDiscount: '', // Preenche com vazio caso não venha da API
+    //         imageUrl: '',         // Preenche com vazio caso não venha da API
+    //     });
+    //     setIsFormOpen(true);
+    // };
 
     const handleSaveProduct = (data: ProductFormData) => {
         if (editingProduct) {
@@ -76,59 +75,50 @@ export default function AdminApp() {
 
     return (
         <div className="app">
-        <Header
-        subtitle="Painel Administrador"
-        start={loggedIn && <AdminMenu current={section} onNavigate={navigate} />}
-        >
-        {loggedIn && (
-            <div className="admin-actions">
-            {section === 'catalog' && !isFormOpen && (
-                <button className="admin-actions__add" onClick={handleOpenCreate}>
-                <PlusIcon />
-                Adicionar Produto
-                </button>
-            )}
-            <button className="admin-actions__logout" onClick={() => void logout()}>
-            Sair
-            </button>
-            </div>
-        )}
-        </Header>
+            <Header
+                subtitle="Painel Administrador"
+                start={loggedIn && <AdminMenu current={section} onNavigate={navigate} />}
+            >
+                {loggedIn && (
+                    <div className="admin-actions">
+                        {section === 'catalog' && !isFormOpen && (
+                            <button className="admin-actions__add" onClick={handleOpenCreate}>
+                                <PlusIcon />
+                                Adicionar Produto
+                            </button>
+                        )}
+                        <button className="admin-actions__logout" onClick={() => void logout()}>
+                            Sair
+                        </button>
+                    </div>
+                )}
+            </Header>
 
-        <main className="app__main">
-        {isFormOpen ? (
-            <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
-            <ProductForm
-            initialData={editingProduct}
-            onSubmit={handleSaveProduct}
-            onCancel={() => {
-                setIsFormOpen(false);
-                setEditingProduct(undefined);
-            }}
-            isEditing={!!editingProduct}
-            />
-            </div>
-        ) : (
-            <>
-            {section === 'catalog' && (
-                <AdminCatalogPage
-                />
-            )}
-            {section === 'report' && (
-                <AdminComingSoonPage
-                title="Relatório"
-                description="Aqui vão aparecer os relatórios de pedidos e vendas."
-                />
-            )}
-            {section === 'settings' && <AdminSettingsPage />
-            }
-            </>     
-        )}
-        </main>
+            <main className="app__main">
+                {isFormOpen ? (
+                    <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
+                        <ProductForm
+                            initialData={editingProduct}
+                            onSubmit={handleSaveProduct}
+                            onCancel={() => {
+                                setIsFormOpen(false);
+                                setEditingProduct(undefined);
+                            }}
+                            isEditing={!!editingProduct}
+                        />
+                    </div>
+                ) : (
+                    <>
+                        {section === 'catalog' && <AdminCatalogPage />}
+                        {section === 'report' && <AdminReportPage />}
+                        {section === 'settings' && <AdminSettingsPage />}
+                    </>
+                )}
+            </main>
 
-        <Footer />
+            <Footer />
 
-        {session.kind === 'anonymous' && <LoginDialog onLogin={login} />}
+            {session.kind === 'anonymous' && <LoginDialog onLogin={login} />}
         </div>
     );
 }

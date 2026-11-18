@@ -1,4 +1,5 @@
 import './styles/ProductCatalog.css';
+import type { ReactNode } from 'react';
 import type { ProductResponse } from '@cafe-da-fisica/shared';
 import { CatalogViewToggle } from './CatalogViewToggle';
 import { ProductCard } from './ProductCard';
@@ -17,13 +18,25 @@ export interface ProductCatalogProps {
     productsState: ProductsState;
     /** Called when a product's card or row is clicked; the page decides what opens. */
     onSelectProduct: (product: ProductResponse) => void;
+    /** Buttons for each product, shown on its card or row (the admin's "remove"/"restore"). */
+    renderActions?: (product: ProductResponse) => ReactNode;
+    /** Products shown faded and labelled "Removido" (admin, "Mostrar removidos"). */
+    isArchived?: (product: ProductResponse) => boolean;
+    /** Extra controls in the filter row, before the cards/list toggle (e.g. "Mostrar removidos"). */
+    toolbar?: ReactNode;
 }
 
 /**
  * The menu: loading and error messages, filters, the cards/list toggle and the products.
  * Shared by the customer catalog and the admin panel, which add their own actions around it.
  */
-export function ProductCatalog({ productsState: res, onSelectProduct }: ProductCatalogProps) {
+export function ProductCatalog({
+    productsState: res,
+    onSelectProduct,
+    renderActions,
+    isArchived,
+    toolbar,
+}: ProductCatalogProps) {
     const products = res.kind === 'ready' ? res.products : [];
 
     const {
@@ -50,7 +63,9 @@ export function ProductCatalog({ productsState: res, onSelectProduct }: ProductC
     }
 
     // READY GARANTIDO
-    if (res.products.length === 0) {
+    // With a toolbar (admin) the filters stay, so "Mostrar removidos" is reachable even with an
+    // empty menu.
+    if (res.products.length === 0 && !toolbar) {
         return <p>Nenhum produto disponível.</p>;
     }
 
@@ -66,10 +81,19 @@ export function ProductCatalog({ productsState: res, onSelectProduct }: ProductC
                 setSearchInput={setSearchInput}
                 setSearchQuery={setSearchQuery}
             >
-                {!listOnly && <CatalogViewToggle view={view} onViewChange={setView} />}
+                {(toolbar || !listOnly) && (
+                    <div className="catalog__toolbar">
+                        {toolbar}
+                        {!listOnly && <CatalogViewToggle view={view} onViewChange={setView} />}
+                    </div>
+                )}
             </ProductFilters>
 
-            {filteredProducts.length === 0 ? (
+            {res.products.length === 0 ? (
+                <p className="catalog__empty" role="status">
+                    Nenhum produto disponível.
+                </p>
+            ) : filteredProducts.length === 0 ? (
                 <p className="catalog__empty" role="status">
                     Nenhum item correspondente encontrado. Tente outra busca ou altere os filtros.
                 </p>
@@ -80,6 +104,8 @@ export function ProductCatalog({ productsState: res, onSelectProduct }: ProductC
                             key={product.id}
                             product={product}
                             onOpen={() => onSelectProduct(product)}
+                            actions={renderActions?.(product)}
+                            archived={isArchived?.(product)}
                         />
                     ))}
                 </div>
@@ -90,6 +116,8 @@ export function ProductCatalog({ productsState: res, onSelectProduct }: ProductC
                             key={product.id}
                             product={product}
                             onOpen={() => onSelectProduct(product)}
+                            actions={renderActions?.(product)}
+                            archived={isArchived?.(product)}
                         />
                     ))}
                 </ul>

@@ -1,0 +1,238 @@
+.admin-report {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.admin-report__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 4px;
+}
+
+.admin-report__print {
+    padding: 10px 16px;
+    border: 1px solid var(--color-accent);
+    border-radius: var(--radius);
+    background: var(--color-accent);
+    color: var(--color-surface);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.admin-report__print:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Only appears on paper: when the report was generated. */
+.admin-report__print-only {
+    display: none;
+}
+
+.admin-report__header p,
+.admin-report__card-heading p {
+    margin: 8px 0 0;
+    color: var(--color-text-muted);
+}
+
+.admin-report__card {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 24px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+}
+
+.admin-report__card-heading h3 {
+    margin: 0;
+}
+
+.admin-report__summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin: 0;
+}
+
+.admin-report__summary > div {
+    padding: 14px 16px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-bg);
+}
+
+.admin-report__summary dt {
+    color: var(--color-text-muted);
+    font-weight: 600;
+}
+
+.admin-report__summary dd {
+    margin: 4px 0 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.admin-report__table-wrapper {
+    overflow-x: auto;
+}
+
+.admin-report__table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.admin-report__table th,
+.admin-report__table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: top;
+}
+
+.admin-report__table thead th {
+    color: var(--color-text-muted);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.admin-report__table tbody th {
+    font-weight: 600;
+}
+
+.admin-report__number {
+    text-align: right !important;
+    white-space: nowrap;
+}
+
+.admin-report__status {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.admin-report__status--pending {
+    background: color-mix(in srgb, var(--color-warn) 18%, transparent);
+    color: var(--color-warn);
+}
+
+.admin-report__status--confirmed {
+    background: color-mix(in srgb, var(--color-ok) 18%, transparent);
+    color: var(--color-ok);
+}
+
+.admin-report__status--cancelled {
+    background: color-mix(in srgb, var(--color-error) 18%, transparent);
+    color: var(--color-error);
+}
+
+.admin-report__hint,
+.admin-report__error {
+    margin: 0;
+}
+
+.admin-report__hint {
+    color: var(--color-text-muted);
+}
+
+.admin-report__error {
+    color: var(--color-error);
+}
+
+/* Read by screen readers only: the visible card title already names the table. */
+.admin-report__sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+/* Printout / "Save as PDF": plain black on white, no menu, no colors, nothing cut in half. */
+@media print {
+    /* Twice the same selector so it beats the dark-mode tokens in index.css, whatever the order. */
+    :root:root {
+        color-scheme: light;
+        --color-bg: #fff;
+        --color-surface: #fff;
+        --color-text: #000;
+        --color-text-muted: #000;
+        --color-border: #000;
+        --color-accent: #000;
+        --color-ok: #000;
+        --color-warn: #000;
+        --color-error: #000;
+    }
+
+    .app__header,
+    .app__footer,
+    .admin-report__print {
+        display: none;
+    }
+
+    .app {
+        max-width: none;
+        padding: 0;
+    }
+
+    .app__main {
+        padding: 0;
+    }
+
+    .admin-report {
+        max-width: none;
+        gap: 16px;
+    }
+
+    .admin-report__print-only {
+        display: block;
+    }
+
+    .admin-report__card {
+        padding: 0;
+        border: 0;
+    }
+
+    .admin-report__summary > div {
+        border-color: #000;
+        background: none;
+    }
+
+    .admin-report__table th,
+    .admin-report__table td {
+        padding: 4px 6px;
+        border-bottom-color: #000;
+    }
+
+    .admin-report__table tr {
+        break-inside: avoid;
+    }
+
+    /* The status stays readable as text, without the colored pill. */
+    .admin-report__status {
+        padding: 0;
+        background: none !important;
+        color: #000 !important;
+    }
+}
+
+@media (max-width: 620px) {
+    .admin-report__card {
+        padding: 18px;
+    }
+
+    .admin-report__summary {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
