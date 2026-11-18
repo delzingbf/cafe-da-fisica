@@ -10,6 +10,7 @@ import type { ProductFormData } from './components/ProductForm';
 import { useAdminSection } from './hooks/useAdminSection';
 import { useAdminSession } from './hooks/useAdminSession';
 import { AdminCatalogPage } from './pages/AdminCatalogPage';
+import { AdminOrdersPage } from './pages/AdminOrdersPage';
 import { AdminReportPage } from './pages/AdminReportPage';
 import { AdminSettingsPage } from './pages/AdminSettingsPage';
 
@@ -110,6 +111,7 @@ export default function AdminApp() {
                 ) : (
                     <>
                         {section === 'catalog' && <AdminCatalogPage />}
+                        {section === 'orders' && loggedIn && <AdminOrdersPage />}
                         {section === 'report' && <AdminReportPage />}
                         {section === 'settings' && <AdminSettingsPage />}
                     </>

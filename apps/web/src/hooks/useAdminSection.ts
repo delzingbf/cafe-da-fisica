@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 
-export type AdminSection = 'catalog' | 'report' | 'settings';
+export type AdminSection = 'catalog' | 'orders' | 'report' | 'settings';
 
 /** URL of each admin page. Anything else under /admin opens the catalog. */
 export const ADMIN_SECTION_PATHS = {
     catalog: '/admin',
+    orders: '/admin/encomendas',
     report: '/admin/relatorio',
     settings: '/admin/configuracoes',
 } satisfies Record<AdminSection, string>;

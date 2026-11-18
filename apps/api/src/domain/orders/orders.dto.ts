@@ -1,8 +1,10 @@
 import {
     ORDER_DELIVERY_METHODS,
     ORDER_PAYMENT_OPTIONS,
+    ORDER_STATUSES,
     type CreateOrderItemRequest,
     type CreateOrderRequest,
+    type OrderStatus,
     type OrderDeliveryMethod,
     type OrderPaymentOption,
 } from '@cafe-da-fisica/shared';
@@ -71,4 +73,9 @@ export class CreateOrderDto implements Omit<CreateOrderRequest, 'scheduledAt'> {
     @ArrayMinSize(1)
     @ArrayUnique((item: CreateOrderItemDto) => item.productId)
     items: CreateOrderItemDto[];
+}
+
+export class UpdateOrderStatusDto {
+    @IsIn(ORDER_STATUSES)
+    status: OrderStatus;
 }

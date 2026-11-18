@@ -35,6 +35,15 @@ const ITEMS: { section: AdminSection; label: string; icon: ReactNode }[] = [
         ),
     },
     {
+        section: 'orders',
+        label: 'Encomendas',
+        icon: (
+            <Icon>
+                <path d="M9 5H5v16h14V5h-4M9 3h6v4H9zM8 12h8M8 16h8" />
+            </Icon>
+        ),
+    },
+    {
         section: 'report',
         label: 'Relatório',
         icon: (

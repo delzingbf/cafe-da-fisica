@@ -4,8 +4,9 @@ import type {
     OrderReportResponse,
     OrderResponse,
     ProductsUnavailableError,
+    OrderStatus,
 } from '@cafe-da-fisica/shared';
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { Product } from '../products/product.entity.js';
@@ -35,6 +36,22 @@ export class OrdersService {
         private readonly orderEmails: OrderEmailsService,
         private readonly orderDao: OrderDAO,
     ) {}
+
+    async findAll(): Promise<OrderReportOrder[]> {
+        return (await this.orderDao.findAll()).map((order) => this.mapOrderToReportOrder(order));
+    }
+
+    async updateStatus(id: number, status: OrderStatus): Promise<void> {
+        if (!(await this.orderDao.updateStatus(id, status))) {
+            throw new NotFoundException('Order not found');
+        }
+    }
+
+    async delete(id: number): Promise<void> {
+        if (!(await this.orderDao.delete(id))) {
+            throw new NotFoundException('Order not found');
+        }
+    }
 
     async create(dto: CreateOrderDto): Promise<OrderResponse> {
         const productIds = dto.items.map((item) => item.productId);
