@@ -5,8 +5,6 @@ import { AdminMenu } from './components/AdminMenu';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import { LoginDialog } from './components/LoginDialog';
-import { ProductForm } from './components/ProductForm';
-import type { ProductFormData } from './components/ProductForm';
 import { useAdminSection } from './hooks/useAdminSection';
 import { useAdminSession } from './hooks/useAdminSession';
 import { AdminCatalogPage } from './pages/AdminCatalogPage';
@@ -39,40 +37,8 @@ export default function AdminApp() {
     const [section, navigate] = useAdminSection();
     const loggedIn = session.kind === 'authenticated';
 
-    // Estados para controlar o formulário e qual produto está a ser editado
-    const [isFormOpen, setIsFormOpen] = useState(false);
-    const [editingProduct, setEditingProduct] = useState<ProductFormData | undefined>(undefined);
-
-    // Abrir formulário para CRIAR novo produto
-    const handleOpenCreate = () => {
-        setEditingProduct(undefined); // Limpa para vir vazio
-        setIsFormOpen(true);
-    };
-
-    // Abrir formulário para EDITAR um produto existente ao clicar nele no catálogo
-    // const handleSelectProduct = (product: ProductResponse) => {
-    //     setEditingProduct({
-    //         name: product.name,
-    //         price: product.price,
-    //         type: product.type,
-    //         isVegan: product.vegan,
-    //         quantityDiscount: '', // Preenche com vazio caso não venha da API
-    //         imageUrl: '',         // Preenche com vazio caso não venha da API
-    //     });
-    //     setIsFormOpen(true);
-    // };
-
-    const handleSaveProduct = (data: ProductFormData) => {
-        if (editingProduct) {
-            console.log('Produto atualizado:', data);
-            alert(`Produto "${data.name}" atualizado com sucesso! (Simulação)`);
-        } else {
-            console.log('Novo produto criado:', data);
-            alert(`Produto "${data.name}" criado com sucesso! (Simulação)`);
-        }
-        setIsFormOpen(false);
-        setEditingProduct(undefined);
-    };
+    // "Adicionar Produto" lives in the header, the form it opens in the catalog page.
+    const [isCreating, setIsCreating] = useState(false);
 
     return (
         <div className="app">
@@ -82,8 +48,11 @@ export default function AdminApp() {
             >
                 {loggedIn && (
                     <div className="admin-actions">
-                        {section === 'catalog' && !isFormOpen && (
-                            <button className="admin-actions__add" onClick={handleOpenCreate}>
+                        {section === 'catalog' && (
+                            <button
+                                className="admin-actions__add"
+                                onClick={() => setIsCreating(true)}
+                            >
                                 <PlusIcon />
                                 Adicionar Produto
                             </button>
@@ -96,26 +65,15 @@ export default function AdminApp() {
             </Header>
 
             <main className="app__main">
-                {isFormOpen ? (
-                    <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
-                        <ProductForm
-                            initialData={editingProduct}
-                            onSubmit={handleSaveProduct}
-                            onCancel={() => {
-                                setIsFormOpen(false);
-                                setEditingProduct(undefined);
-                            }}
-                            isEditing={!!editingProduct}
-                        />
-                    </div>
-                ) : (
-                    <>
-                        {section === 'catalog' && <AdminCatalogPage />}
-                        {section === 'orders' && loggedIn && <AdminOrdersPage />}
-                        {section === 'report' && <AdminReportPage />}
-                        {section === 'settings' && <AdminSettingsPage />}
-                    </>
+                {section === 'catalog' && (
+                    <AdminCatalogPage
+                        isCreating={loggedIn && isCreating}
+                        onCreateClose={() => setIsCreating(false)}
+                    />
                 )}
+                {section === 'orders' && loggedIn && <AdminOrdersPage />}
+                {section === 'report' && <AdminReportPage />}
+                {section === 'settings' && <AdminSettingsPage />}
             </main>
 
             <Footer />

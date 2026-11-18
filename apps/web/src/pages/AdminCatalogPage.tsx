@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import type { ProductResponse } from '@cafe-da-fisica/shared';
 import { ApiError, api } from '../api/client';
 import { ConfirmDialog } from '../components/ConfirmDialog';
+import { Dialog } from '../components/Dialog';
 import { ProductCatalog } from '../components/ProductCatalog';
+import { ProductForm, type ProductFormData } from '../components/ProductForm';
 import { ProductModal } from '../components/ProductModal';
-import { ProductForm } from '../components/ProductForm';
-import type { ProductFormData } from '../components/ProductForm';
 import { useProducts } from '../hooks/useProducts';
 import './styles/AdminCatalogPage.css';
 
@@ -27,11 +27,27 @@ function TrashIcon() {
     );
 }
 
-function actionErrorMessage(error: unknown, action: 'remover' | 'restaurar'): string {
+function actionErrorMessage(error: unknown, action: 'remover' | 'restaurar' | 'salvar'): string {
     if (error instanceof ApiError && error.status === 401) {
         return 'Sua sessão expirou. Entre de novo para continuar.';
     }
+    if (action === 'salvar' && error instanceof ApiError && error.status === 400) {
+        return 'Confira os dados do produto e tente de novo.';
+    }
+    if (error instanceof ApiError && error.status === 404) {
+        return 'Este produto não existe mais. Atualize a página.';
+    }
     return `Não foi possível ${action}. Verifique sua conexão e tente de novo.`;
+}
+
+/** The product form: empty to create, or filled with the product being edited. */
+type FormTarget = { kind: 'create' } | { kind: 'edit'; product: ProductResponse };
+
+export interface AdminCatalogPageProps {
+    /** "Adicionar Produto" (in the header, owned by AdminApp) was clicked. */
+    isCreating?: boolean;
+    /** The create form closed, saved or cancelled. */
+    onCreateClose?: () => void;
 }
 
 /** Short message at the bottom of the screen. `key` changes on every message, replaying it. */
@@ -50,12 +66,15 @@ const nextNotice = (previous: Notice | null, text: string): Notice => ({
  * each product and "Mostrar removidos" to bring removed products back. Removing only hides the
  * product (see ProductsService.archive in the API), so past orders keep pointing to it.
  */
-export function AdminCatalogPage() {
+export function AdminCatalogPage({ isCreating = false, onCreateClose }: AdminCatalogPageProps) {
     // Bumped after a remove/restore so the lists are fetched again.
     const [version, setVersion] = useState(0);
     const res = useProducts(version);
     const [selectedProduct, setSelectedProduct] = useState<ProductResponse | null>(null);
-    const [editingProduct, setEditingProduct] = useState<ProductFormData | null>(null);
+    const [editingProduct, setEditingProduct] = useState<ProductResponse | null>(null);
+    const [saving, setSaving] = useState(false);
+    const [saveError, setSaveError] = useState<string | null>(null);
+    const formTitleId = useId();
 
     const [showArchived, setShowArchived] = useState(false);
     const [archived, setArchived] = useState<ProductResponse[]>([]);
@@ -154,114 +173,123 @@ export function AdminCatalogPage() {
             </button>
         );
 
-    // Quando clica em "Editar" no modal de detalhes
-    const handleStartEdit = (product: ProductResponse) => {
-        setSelectedProduct(null); // Fecha o modal de visualização
-        setEditingProduct({
-            name: product.name,
-            price: product.price,
-            type: product.type,
-            isVegan: product.vegan,
-            quantityDiscount: '', // Preenche com o que vier ou vazio
-            imageUrl: '',         // Preenche com o que vier ou vazio
-        });
+    // Editing wins over creating: the create form only opens from the header, outside any pop-up.
+    const formTarget: FormTarget | null = editingProduct
+        ? { kind: 'edit', product: editingProduct }
+        : isCreating
+          ? { kind: 'create' }
+          : null;
+
+    const startEdit = (product: ProductResponse) => {
+        setSelectedProduct(null);
+        setSaveError(null);
+        setEditingProduct(product);
     };
 
-    const handleSaveEdit = (data: ProductFormData) => {
-        console.log('Produto editado:', data);
-        alert(`Produto "${data.name}" atualizado com sucesso! (Simulação)`);
-        setEditingProduct(null);
+    const closeForm = () => {
+        setSaveError(null);
+        if (editingProduct) setEditingProduct(null);
+        else onCreateClose?.();
+    };
+
+    const saveProduct = async (data: ProductFormData) => {
+        if (!formTarget) return;
+        setSaving(true);
+        setSaveError(null);
+        try {
+            if (formTarget.kind === 'edit') {
+                await api.patch<ProductResponse>(`/products/${formTarget.product.id}`, data);
+                showNotice(`${data.name} atualizado`);
+            } else {
+                await api.post<ProductResponse>('/products', data);
+                showNotice(`${data.name} adicionado ao cardápio`);
+            }
+            closeForm();
+            setVersion((v) => v + 1);
+        } catch (error) {
+            setSaveError(actionErrorMessage(error, 'salvar'));
+        } finally {
+            setSaving(false);
+        }
     };
 
     return (
         <>
-        <ProductCatalog
-            productsState={productsState}
-            onSelectProduct={setSelectedProduct}
-            renderActions={renderActions}
-            isArchived={(product) => archivedIds.has(product.id)}
-            toolbar={
-                <button
-                    type="button"
-                    className="admin-catalog__archived-toggle"
-                    aria-pressed={showArchived}
-                    onClick={() => setShowArchived((on) => !on)}
-                >
-                    Mostrar removidos
-                </button>
-            }
-        />
-
-        {/* Modal de visualização padrão do projeto */}
-        {selectedProduct && (
-            <ProductModal product={selectedProduct} onClose={() => setSelectedProduct(null)}>
-            {/* Botão de edição encaixado exatamente onde o repositório previa */}
-            <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'flex-end' }}>
-            <button
-            type="button"
-            onClick={() => handleStartEdit(selectedProduct)}
-            style={{
-                padding: '8px 16px',
-                backgroundColor: 'var(--color-accent)',
-                             color: 'white',
-                             border: 'none',
-                             borderRadius: '8px',
-                             cursor: 'pointer',
-                             fontWeight: 'bold'
-            }}
-            >
-            Editar Produto
-            </button>
-            </div>
-            </ProductModal>
-        )}
-
-        {/* Formulário de edição aberto quando o admin clica em editar */}
-        {editingProduct && (
-            <div style={{
-                position: 'fixed',
-                inset: 0,
-                background: 'rgba(0,0,0,0.5)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            zIndex: 1000,
-                            padding: '20px'
-            }}>
-            <ProductForm
-            initialData={editingProduct}
-            onSubmit={handleSaveEdit}
-            onCancel={() => setEditingProduct(null)}
-            isEditing={true}
+            <ProductCatalog
+                productsState={productsState}
+                onSelectProduct={setSelectedProduct}
+                renderActions={renderActions}
+                isArchived={(product) => archivedIds.has(product.id)}
+                toolbar={
+                    <button
+                        type="button"
+                        className="admin-catalog__archived-toggle"
+                        aria-pressed={showArchived}
+                        onClick={() => setShowArchived((on) => !on)}
+                    >
+                        Mostrar removidos
+                    </button>
+                }
             />
-            </div>
-        )}
 
-        {productToRemove && (
-            <ConfirmDialog
-                title="Remover produto"
-                confirmLabel="Remover"
-                busy={removing}
-                error={removeError}
-                onConfirm={() => void confirmRemove()}
-                onCancel={closeRemove}
-            >
-                <p>Remover “{productToRemove.name}” do cardápio?</p>
-                <p>
-                    Ele deixa de aparecer para os clientes. Você pode restaurar depois em “Mostrar
-                    removidos”.
-                </p>
-            </ConfirmDialog>
-        )}
-
-        {/* Always mounted, so screen readers announce each new message. */}
-        <div className="admin-catalog__toast-region" role="status" aria-live="polite">
-            {notice && (
-                <p key={notice.key} className="admin-catalog__toast">
-                    {notice.text}
-                </p>
+            {selectedProduct && (
+                <ProductModal product={selectedProduct} onClose={() => setSelectedProduct(null)}>
+                    <button
+                        type="button"
+                        className="botao-adicionar"
+                        onClick={() => startEdit(selectedProduct)}
+                    >
+                        Editar Produto
+                    </button>
+                </ProductModal>
             )}
-        </div>
+
+            {/* Not dismissible by Esc or a click outside, so a typed form is not lost by accident. */}
+            {formTarget && (
+                <Dialog
+                    labelledBy={formTitleId}
+                    dismissible={false}
+                    size="wide"
+                    className="admin-catalog__form"
+                >
+                    <ProductForm
+                        // A new form for each product, so it starts from that product's values.
+                        key={formTarget.kind === 'edit' ? formTarget.product.id : 'new'}
+                        product={formTarget.kind === 'edit' ? formTarget.product : undefined}
+                        titleId={formTitleId}
+                        busy={saving}
+                        error={saveError}
+                        onSubmit={(data) => void saveProduct(data)}
+                        onCancel={closeForm}
+                    />
+                </Dialog>
+            )}
+
+            {productToRemove && (
+                <ConfirmDialog
+                    title="Remover produto"
+                    confirmLabel="Remover"
+                    busy={removing}
+                    error={removeError}
+                    onConfirm={() => void confirmRemove()}
+                    onCancel={closeRemove}
+                >
+                    <p>Remover “{productToRemove.name}” do cardápio?</p>
+                    <p>
+                        Ele deixa de aparecer para os clientes. Você pode restaurar depois em
+                        “Mostrar removidos”.
+                    </p>
+                </ConfirmDialog>
+            )}
+
+            {/* Always mounted, so screen readers announce each new message. */}
+            <div className="admin-catalog__toast-region" role="status" aria-live="polite">
+                {notice && (
+                    <p key={notice.key} className="admin-catalog__toast">
+                        {notice.text}
+                    </p>
+                )}
+            </div>
         </>
     );
 }

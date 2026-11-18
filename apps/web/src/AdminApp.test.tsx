@@ -307,6 +307,213 @@ describe('AdminApp', () => {
         });
     });
 
+    describe('creating and editing products', () => {
+        const brownie: ProductResponse = {
+            id: 7,
+            name: 'Brownie',
+            price: 8,
+            available: true,
+            type: 'sweet',
+            vegan: false,
+            imageUrl: 'https://example.com/brownie.png',
+        };
+
+        /** A fake API that keeps the products it is sent. */
+        function productsApi(overrides: Record<string, Route> = {}) {
+            let menu: ProductResponse[] = [brownie];
+            const body = (init?: RequestInit) => JSON.parse(String(init?.body)) as object;
+            const fetchMock = mockApi({
+                'GET /api/auth/me': () => Response.json(admin),
+                'GET /api/products': () => Response.json(menu),
+                ...overrides,
+            });
+            const routes = fetchMock.getMockImplementation()!;
+            fetchMock.mockImplementation((url: string, init?: RequestInit) => {
+                const key = `${init?.method ?? 'GET'} ${url}`;
+                if (!overrides[key] && key === 'POST /api/products') {
+                    const created = { ...brownie, ...body(init), id: 8 } as ProductResponse;
+                    menu = [...menu, created];
+                    return Promise.resolve(Response.json(created, { status: 201 }));
+                }
+                if (!overrides[key] && key === 'PATCH /api/products/7') {
+                    menu = menu.map((p) => (p.id === 7 ? { ...p, ...body(init) } : p));
+                    return Promise.resolve(Response.json(menu.find((p) => p.id === 7)));
+                }
+                return routes(url, init);
+            });
+            return fetchMock;
+        }
+
+        async function openEditForm() {
+            fireEvent.click(await screen.findByRole('button', { name: 'Brownie' }));
+            fireEvent.click(screen.getByRole('button', { name: 'Editar Produto' }));
+            return screen.getByRole('dialog', { name: 'Editar Produto' });
+        }
+
+        it('creates a product from "Adicionar Produto"', async () => {
+            const fetchMock = productsApi();
+            render(<AdminApp />);
+
+            fireEvent.click(await screen.findByRole('button', { name: 'Adicionar Produto' }));
+            const form = screen.getByRole('dialog', { name: 'Adicionar Novo Produto' });
+            fireEvent.change(within(form).getByLabelText('Nome'), {
+                target: { value: ' Pão de queijo ' },
+            });
+            fireEvent.change(within(form).getByLabelText('Preço (R$)'), {
+                target: { value: '4,50' },
+            });
+            fireEvent.change(within(form).getByLabelText('Tipo'), { target: { value: 'savory' } });
+            fireEvent.click(within(form).getByLabelText('Produto Vegano'));
+            fireEvent.click(within(form).getByRole('button', { name: 'Criar Produto' }));
+
+            expect(await screen.findByText('Pão de queijo adicionado ao cardápio')).toBeTruthy();
+            expect(fetchMock).toHaveBeenCalledWith(
+                '/api/products',
+                expect.objectContaining({
+                    method: 'POST',
+                    body: JSON.stringify({
+                        name: 'Pão de queijo',
+                        price: 4.5,
+                        type: 'savory',
+                        vegan: true,
+                        available: true,
+                        imageUrl: null,
+                    }),
+                }),
+            );
+            expect(screen.queryByRole('dialog')).toBeNull();
+            expect(await screen.findByRole('button', { name: 'Pão de queijo' })).toBeTruthy();
+        });
+
+        it('rejects a price with more than two decimals before sending it', async () => {
+            const fetchMock = productsApi();
+            render(<AdminApp />);
+
+            fireEvent.click(await screen.findByRole('button', { name: 'Adicionar Produto' }));
+            const form = screen.getByRole('dialog', { name: 'Adicionar Novo Produto' });
+            fireEvent.change(within(form).getByLabelText('Nome'), { target: { value: 'Bolo' } });
+            fireEvent.change(within(form).getByLabelText('Preço (R$)'), {
+                target: { value: '4,505' },
+            });
+            fireEvent.change(within(form).getByLabelText('Tipo'), { target: { value: 'sweet' } });
+            fireEvent.click(within(form).getByRole('button', { name: 'Criar Produto' }));
+
+            expect(within(form).getByRole('alert').textContent).toBe(
+                'Use só números e até duas casas decimais, como 4,50.',
+            );
+            expect(fetchMock).not.toHaveBeenCalledWith(
+                '/api/products',
+                expect.objectContaining({ method: 'POST' }),
+            );
+        });
+
+        it('edits a product, starting from its current values', async () => {
+            const fetchMock = productsApi();
+            render(<AdminApp />);
+
+            const form = await openEditForm();
+            const value = (label: string) =>
+                (within(form).getByLabelText(label) as HTMLInputElement).value;
+            expect(value('Nome')).toBe('Brownie');
+            expect(value('Preço (R$)')).toBe('8,00');
+            expect(value('Tipo')).toBe('sweet');
+            expect(value('URL da Imagem')).toBe('https://example.com/brownie.png');
+
+            fireEvent.change(within(form).getByLabelText('Preço (R$)'), {
+                target: { value: '9.5' },
+            });
+            fireEvent.click(within(form).getByLabelText('Disponível para encomenda'));
+            fireEvent.change(within(form).getByLabelText('URL da Imagem'), {
+                target: { value: '' },
+            });
+            fireEvent.click(within(form).getByRole('button', { name: 'Salvar Alterações' }));
+
+            expect(await screen.findByText('Brownie atualizado')).toBeTruthy();
+            expect(fetchMock).toHaveBeenCalledWith(
+                '/api/products/7',
+                expect.objectContaining({
+                    method: 'PATCH',
+                    body: JSON.stringify({
+                        name: 'Brownie',
+                        price: 9.5,
+                        type: 'sweet',
+                        vegan: false,
+                        available: false,
+                        imageUrl: null,
+                    }),
+                }),
+            );
+            expect(screen.queryByRole('dialog')).toBeNull();
+        });
+
+        it('explains a failed save and keeps the form open', async () => {
+            productsApi({ 'PATCH /api/products/7': () => new Response(null, { status: 400 }) });
+            render(<AdminApp />);
+
+            const form = await openEditForm();
+            fireEvent.click(within(form).getByRole('button', { name: 'Salvar Alterações' }));
+
+            expect((await within(form).findByRole('alert')).textContent).toBe(
+                'Confira os dados do produto e tente de novo.',
+            );
+            expect(screen.getByRole('dialog', { name: 'Editar Produto' })).toBeTruthy();
+        });
+
+        it('asks for the login again when the session expired meanwhile', async () => {
+            let sessionValid = true;
+            productsApi({
+                'GET /api/auth/me': () =>
+                    sessionValid ? Response.json(admin) : new Response(null, { status: 401 }),
+                'PATCH /api/products/7': () => {
+                    sessionValid = false;
+                    return new Response(null, { status: 401 });
+                },
+            });
+            render(<AdminApp />);
+
+            const form = await openEditForm();
+            fireEvent.click(within(form).getByRole('button', { name: 'Salvar Alterações' }));
+
+            expect(
+                await screen.findByRole('dialog', { name: 'Acesso do administrador' }),
+            ).toBeTruthy();
+            expect(screen.queryByRole('button', { name: 'Adicionar Produto' })).toBeNull();
+        });
+    });
+
+    it('keeps the session after a wrong current password', async () => {
+        const fetchMock = mockApi({
+            'GET /api/auth/me': () => Response.json(admin),
+            'GET /api/products': products,
+            'GET /api/settings': () =>
+                Response.json({ orderNotificationEmail: 'pedidos@example.com' }),
+            'POST /api/auth/password': unauthorized,
+        });
+        window.history.replaceState(null, '', '/admin/configuracoes');
+        render(<AdminApp />);
+
+        fireEvent.change(await screen.findByLabelText('Senha atual'), {
+            target: { value: 'errada' },
+        });
+        fireEvent.change(screen.getByLabelText('Nova senha'), {
+            target: { value: 'senha-nova-segura' },
+        });
+        fireEvent.change(screen.getByLabelText('Confirmar nova senha'), {
+            target: { value: 'senha-nova-segura' },
+        });
+        fireEvent.click(screen.getByRole('button', { name: 'Trocar senha' }));
+
+        expect((await screen.findByRole('alert')).textContent).toBe(
+            'A senha atual está incorreta ou sua sessão expirou.',
+        );
+        // The 401 makes the page ask the API again whether the session is still there.
+        await waitFor(() =>
+            expect(fetchMock.mock.calls.filter(([url]) => url === '/api/auth/me')).toHaveLength(2),
+        );
+        expect(screen.getByRole('button', { name: 'Sair' })).toBeTruthy();
+        expect(screen.queryByRole('dialog', { name: 'Acesso do administrador' })).toBeNull();
+    });
+
     it('logs out back to the login card', async () => {
         mockApi({
             'GET /api/auth/me': () => Response.json(admin),

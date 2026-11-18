@@ -12,6 +12,8 @@ export interface DialogProps {
     dismissible?: boolean;
     /** `strong` blurs the page behind almost beyond recognition (e.g. the admin login). */
     backdrop?: 'normal' | 'strong';
+    /** `wide` for a form (e.g. the product form); only for `placement="center"`. */
+    size?: 'normal' | 'wide';
     /** Class of the panel inside the dialog, which owns its look. */
     className?: string;
     children: ReactNode;
@@ -25,6 +27,7 @@ export function Dialog({
     placement = 'center',
     dismissible = true,
     backdrop = 'normal',
+    size = 'normal',
     className,
     children,
 }: DialogProps) {
@@ -37,6 +40,7 @@ export function Dialog({
 
     const classes = ['dialog', `dialog--${placement}`];
     if (backdrop === 'strong') classes.push('dialog--backdrop-strong');
+    if (size === 'wide') classes.push('dialog--wide');
 
     return (
         <dialog
