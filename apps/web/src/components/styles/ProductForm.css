@@ -37,16 +37,30 @@
     border-radius: 8px;
     padding: 0.625rem 0.875rem;
     font-size: 1rem;
-    color: var(--color-text);
+    /* The field stays white in both themes, so its text is always the brand brown. */
+    color: var(--color-brand-brown);
     width: 100%;
     box-sizing: border-box;
     transition: border-color 0.2s, outline 0.2s;
+}
+
+.product-form__input::placeholder {
+    color: color-mix(in srgb, var(--color-brand-brown) 55%, #fff);
 }
 
 .product-form__input:focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 1px;
     border-color: var(--color-accent);
+}
+
+.product-form__input[aria-invalid='true'] {
+    border-color: var(--color-error);
+}
+
+.product-form__error {
+    color: var(--color-error);
+    font-size: 0.875rem;
 }
 
 .product-form__checkbox-wrapper {

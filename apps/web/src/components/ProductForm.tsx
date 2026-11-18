@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { parsePrice, priceInputValue } from '../utils/parsePrice';
 import './styles/ProductForm.css';
 
 export interface ProductFormData {
@@ -24,7 +25,11 @@ export function ProductForm({
     isEditing = false,
 }: ProductFormProps) {
     const [name, setName] = useState(initialData?.name || '');
-    const [price, setPrice] = useState<number | ''>(initialData?.price ?? '');
+    // Kept as typed ("4,50"), converted on submit; see parsePrice.
+    const [price, setPrice] = useState(
+        typeof initialData?.price === 'number' ? priceInputValue(initialData.price) : '',
+    );
+    const [priceError, setPriceError] = useState<string | null>(null);
     const [type, setType] = useState(initialData?.type || '');
     const [isVegan, setIsVegan] = useState(initialData?.isVegan ?? false);
     const [quantityDiscount, setQuantityDiscount] = useState(
@@ -34,9 +39,15 @@ export function ProductForm({
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        const parsedPrice = parsePrice(price);
+        if (!parsedPrice.ok) {
+            setPriceError(parsedPrice.error);
+            document.getElementById('price')?.focus();
+            return;
+        }
         onSubmit({
             name,
-            price: Number(price),
+            price: parsedPrice.value,
                  type,
                  isVegan,
                  quantityDiscount,
@@ -65,17 +76,28 @@ export function ProductForm({
 
         <div className="product-form__group">
         <label className="product-form__label" htmlFor="price">Preço (R$)</label>
+        {/* Text, not type="number": Chromium drops a typed comma there, so "4,50" became 450. */}
         <input
         id="price"
-        type="number"
-        step="0.01"
-        min="0"
+        type="text"
+        inputMode="decimal"
+        autoComplete="off"
         className="product-form__input"
         value={price}
-        onChange={(e) => setPrice(e.target.value === '' ? '' : Number(e.target.value))}
-        placeholder="0.00"
+        onChange={(e) => {
+            setPrice(e.target.value);
+            setPriceError(null);
+        }}
+        placeholder="0,00"
         required
+        aria-invalid={Boolean(priceError)}
+        aria-describedby={priceError ? 'price-error' : undefined}
         />
+        {priceError && (
+            <span id="price-error" className="product-form__error" role="alert">
+            {priceError}
+            </span>
+        )}
         </div>
 
         <div className="product-form__group">

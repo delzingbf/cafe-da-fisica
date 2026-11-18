@@ -143,6 +143,15 @@ export function AdminSettingsPage() {
                                 onChange={(event) => setEmail(event.target.value)}
                             />
                         </label>
+                        {/* Messages come after the button: they span the whole row, so placed
+                            before it they would push it onto a new line. */}
+                        <button
+                            className="admin-settings__button"
+                            disabled={emailSaving}
+                            type="submit"
+                        >
+                            {emailSaving ? 'Salvando…' : 'Salvar e-mail'}
+                        </button>
                         {settings?.orderNotificationEmail === null && (
                             <p className="admin-settings__hint">
                                 Ainda não há um e-mail configurado.
@@ -158,13 +167,6 @@ export function AdminSettingsPage() {
                                 {emailMessage}
                             </p>
                         )}
-                        <button
-                            className="admin-settings__button"
-                            disabled={emailSaving}
-                            type="submit"
-                        >
-                            {emailSaving ? 'Salvando…' : 'Salvar e-mail'}
-                        </button>
                     </form>
                 )}
             </section>
@@ -215,6 +217,13 @@ export function AdminSettingsPage() {
                             onChange={(event) => setConfirmPassword(event.target.value)}
                         />
                     </label>
+                    <button
+                        className="admin-settings__button"
+                        disabled={passwordSaving}
+                        type="submit"
+                    >
+                        {passwordSaving ? 'Alterando…' : 'Trocar senha'}
+                    </button>
                     {passwordError && (
                         <p className="admin-settings__error" role="alert">
                             {passwordError}
@@ -225,13 +234,6 @@ export function AdminSettingsPage() {
                             {passwordMessage}
                         </p>
                     )}
-                    <button
-                        className="admin-settings__button"
-                        disabled={passwordSaving}
-                        type="submit"
-                    >
-                        {passwordSaving ? 'Alterando…' : 'Trocar senha'}
-                    </button>
                 </form>
             </section>
 

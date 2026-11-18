@@ -18,6 +18,8 @@
     --font-sans: system-ui, 'Segoe UI', Roboto, sans-serif;
     --font-mono: ui-monospace, Consolas, monospace;
     --radius: 8px;
+    /* Width of the catalog search bar, shared by the list view so both line up. */
+    --catalog-column-width: clamp(min(100%, 480px), 30vw, 8000px);
 
     color-scheme: light dark;
     /* Fluid base size: 16px on a 1920px-wide screen (1080p), growing/shrinking with the width but
