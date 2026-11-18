@@ -1,3 +1,8 @@
+.admin-orders .admin-report__table tbody th,
+.admin-orders .admin-report__table tbody td {
+    vertical-align: middle;
+}
+
 .admin-orders__button,
 .admin-orders__select {
     border: 1px solid var(--color-border);
@@ -46,14 +51,16 @@
 
 .admin-orders__button:disabled,
 .admin-orders__select:disabled {
-    opacity: 0.6;
     cursor: wait;
 }
 
-.admin-orders__button:focus-visible,
-.admin-orders__select:focus-visible {
+.admin-orders__button:focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 3px;
+}
+
+.admin-orders__select:focus {
+    outline: none;
 }
 
 .admin-orders__items {
@@ -91,4 +98,51 @@
     .admin-orders__select {
         transition: none;
     }
+}
+
+.admin-orders__feedback {
+    min-height: 1.5em;
+}
+
+.admin-orders__feedback p {
+    margin: 0;
+}
+
+.admin-orders__select {
+    min-width: 132px;
+}
+
+.admin-orders__status-control {
+    position: relative;
+    display: inline-block;
+}
+
+.admin-orders__status-control::after {
+    content: '';
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    width: 6px;
+    height: 6px;
+    border-right: 2px solid var(--status-color);
+    border-bottom: 2px solid var(--status-color);
+    transform: translateY(-70%) rotate(45deg);
+    pointer-events: none;
+}
+
+.admin-orders__status-control:has(.admin-report__status--pending) {
+    --status-color: var(--color-warn);
+}
+
+.admin-orders__status-control:has(.admin-report__status--confirmed) {
+    --status-color: var(--color-ok);
+}
+
+.admin-orders__status-control:has(.admin-report__status--cancelled) {
+    --status-color: var(--color-error);
+}
+
+.admin-orders__status-control .admin-orders__select {
+    appearance: none;
+    padding-right: 34px;
 }

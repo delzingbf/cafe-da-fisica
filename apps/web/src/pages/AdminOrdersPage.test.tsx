@@ -66,6 +66,34 @@ describe('AdminOrdersPage', () => {
         expect(fetch.mock.calls[2][1]).toMatchObject({ method: 'DELETE' });
     });
 
+    it('keeps the existing table mounted while refreshing', async () => {
+        let finish!: (response: Response) => void;
+        const fetch = vi
+            .fn()
+            .mockResolvedValueOnce(Response.json([order]))
+            .mockImplementationOnce(
+                () =>
+                    new Promise<Response>((resolve) => {
+                        finish = resolve;
+                    }),
+            );
+        vi.stubGlobal('fetch', fetch);
+        render(<AdminOrdersPage />);
+        await screen.findByText('Ana');
+        const table = screen.getByRole('table');
+        fireEvent.click(screen.getByRole('button', { name: 'Atualizar lista' }));
+        expect(screen.getByRole('table')).toBe(table);
+        expect(screen.getByText('Ana')).toBeTruthy();
+        finish(Response.json([order]));
+        await waitFor(() =>
+            expect(
+                (screen.getByRole('button', { name: 'Atualizar lista' }) as HTMLButtonElement)
+                    .disabled,
+            ).toBe(false),
+        );
+        expect(screen.getByRole('table')).toBe(table);
+    });
+
     it('explains expired sessions', async () => {
         vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response(null, { status: 401 })));
         render(<AdminOrdersPage />);

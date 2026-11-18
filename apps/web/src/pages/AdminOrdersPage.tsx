@@ -25,6 +25,7 @@ function errorMessage(error: unknown): string {
 export function AdminOrdersPage() {
     const [orders, setOrders] = useState<OrderReportOrder[]>([]);
     const [loading, setLoading] = useState(true);
+    const [loaded, setLoaded] = useState(false);
     const [busy, setBusy] = useState<number | null>(null);
     const [error, setError] = useState('');
     const [notice, setNotice] = useState('');
@@ -41,7 +42,10 @@ export function AdminOrdersPage() {
                 if (!controller.signal.aborted) setError(errorMessage(cause));
             })
             .finally(() => {
-                if (!controller.signal.aborted) setLoading(false);
+                if (!controller.signal.aborted) {
+                    setLoading(false);
+                    setLoaded(true);
+                }
             });
         return () => controller.abort();
     }, [revision]);
@@ -52,13 +56,18 @@ export function AdminOrdersPage() {
         setBusy(order.id);
         setError('');
         setNotice('');
+        setOrders((current) =>
+            current.map((item) => (item.id === order.id ? { ...item, status } : item)),
+        );
         try {
             await api.patch<void>(`/orders/${order.id}/status`, { status });
-            setOrders((current) =>
-                current.map((item) => (item.id === order.id ? { ...item, status } : item)),
-            );
             setNotice(`Status do pedido #${order.id} atualizado.`);
         } catch (cause) {
+            setOrders((current) =>
+                current.map((item) =>
+                    item.id === order.id ? { ...item, status: order.status } : item,
+                ),
+            );
             setError(errorMessage(cause));
         } finally {
             mutation.current = false;
@@ -111,16 +120,27 @@ export function AdminOrdersPage() {
                     Atualizar lista
                 </button>
             </header>
-            {error && (
-                <p role="alert" className="admin-report__error">
-                    {error}
-                </p>
-            )}
-            {notice && <p role="status">{notice}</p>}
-            {loading ? (
-                <p role="status">Carregando encomendas…</p>
-            ) : (
-                <section className="admin-report__card" aria-labelledby="orders-list-title">
+            <div className="admin-orders__feedback">
+                {error ? (
+                    <p role="alert" className="admin-report__error">
+                        {error}
+                    </p>
+                ) : (
+                    <p role="status">
+                        {loading
+                            ? loaded
+                                ? 'Atualizando encomendas…'
+                                : 'Carregando encomendas…'
+                            : notice}
+                    </p>
+                )}
+            </div>
+            {loaded && (
+                <section
+                    className="admin-report__card"
+                    aria-labelledby="orders-list-title"
+                    aria-busy={loading}
+                >
                     <div className="admin-report__card-heading">
                         <h3 id="orders-list-title">Todas as encomendas</h3>
                         <p>Do pedido mais recente ao mais antigo.</p>
@@ -171,24 +191,26 @@ export function AdminOrdersPage() {
                                             <td>{ORDER_PAYMENT_LABELS[order.paymentOption]}</td>
                                             <td>{ORDER_DELIVERY_LABELS[order.deliveryMethod]}</td>
                                             <td>
-                                                <select
-                                                    aria-label={`Status do pedido #${order.id}`}
-                                                    className={`admin-orders__select admin-report__status--${order.status}`}
-                                                    value={order.status}
-                                                    disabled={busy !== null}
-                                                    onChange={(event) =>
-                                                        void updateStatus(
-                                                            order,
-                                                            event.target.value as OrderStatus,
-                                                        )
-                                                    }
-                                                >
-                                                    {ORDER_STATUSES.map((status) => (
-                                                        <option key={status} value={status}>
-                                                            {ORDER_STATUS_LABELS[status]}
-                                                        </option>
-                                                    ))}
-                                                </select>
+                                                <span className="admin-orders__status-control">
+                                                    <select
+                                                        aria-label={`Status do pedido #${order.id}`}
+                                                        className={`admin-orders__select admin-report__status--${order.status}`}
+                                                        value={order.status}
+                                                        disabled={loading || busy !== null}
+                                                        onChange={(event) =>
+                                                            void updateStatus(
+                                                                order,
+                                                                event.target.value as OrderStatus,
+                                                            )
+                                                        }
+                                                    >
+                                                        {ORDER_STATUSES.map((status) => (
+                                                            <option key={status} value={status}>
+                                                                {ORDER_STATUS_LABELS[status]}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </span>
                                             </td>
                                             <td className="admin-report__number">
                                                 {formatPrice(order.total)}
@@ -198,7 +220,7 @@ export function AdminOrdersPage() {
                                                     type="button"
                                                     className="admin-orders__button admin-orders__delete"
                                                     aria-label={`Excluir pedido #${order.id}`}
-                                                    disabled={busy !== null}
+                                                    disabled={loading || busy !== null}
                                                     onClick={() => void deleteOrder(order)}
                                                 >
                                                     Excluir
