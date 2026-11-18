@@ -14,3 +14,47 @@ export interface OrderResponse {
     status: OrderStatus;
     total: number;
 }
+
+// UC6 - Gerar Relatório. Dates are ISO 8601 strings (JSON has no Date type).
+
+/** One order of the history, with its lines. `total` is the sum of `unitPrice * quantity`. */
+export interface OrderReportOrder {
+    id: number;
+    customerName: string;
+    status: OrderStatus;
+    paymentOption: OrderPaymentOption;
+    deliveryMethod: OrderDeliveryMethod;
+    createdAt: string;
+    total: number;
+    items: Array<{
+        productId: number;
+        productName: string;
+        quantity: number;
+        unitPrice: number;
+    }>;
+}
+
+/** A product ordered in the last week: units sold and the money they brought in. */
+export interface OrderReportProduct {
+    productId: number;
+    productName: string;
+    quantity: number;
+    revenue: number;
+}
+
+export interface OrderReportResponse {
+    /** Every order of the last 4 weeks (28 days), newest first, cancelled ones included. */
+    history: {
+        from: string;
+        to: string;
+        orders: OrderReportOrder[];
+    };
+    /** Last 7 days, cancelled orders left out of the products and of the total. */
+    lastWeek: {
+        from: string;
+        to: string;
+        ordersCount: number;
+        products: OrderReportProduct[];
+        totalRevenue: number;
+    };
+}
