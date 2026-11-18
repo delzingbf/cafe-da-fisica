@@ -35,13 +35,16 @@ export function CheckoutModal({ open, onClose }: Props) {
                         <p>
                             Enviamos a confirmação para o seu e-mail. Total:{' '}
                             {formatPrice(status.order.total)}.
+                            <br />
+                            Não encontrou? Confira a pasta de <strong>spam</strong> ou lixo
+                            eletrônico.
                         </p>
                     </div>
                     <button type="button" aria-label="Fechar" onClick={handleClose}>
                         ✕
                     </button>
                 </header>
-                <div className="checkout-actions checkout-actions--end">
+                <div className="checkout-actions checkout-actions--center">
                     <button type="button" className="checkout-primary" onClick={handleClose}>
                         Fechar
                     </button>

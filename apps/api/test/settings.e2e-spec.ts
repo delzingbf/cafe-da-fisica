@@ -64,7 +64,7 @@ describe('Settings (e2e)', () => {
                 .send({ email: '  Pedidos@Example.com ' })
                 .expect(200);
 
-            // No RESEND_API_KEY in the tests, so no confirmation is actually sent.
+            // No SMTP credentials in the tests, so no confirmation is actually sent.
             expect(response.body).toEqual({ confirmationEmailSent: false });
             const settings = await testDataSource
                 .getRepository(Settings)
