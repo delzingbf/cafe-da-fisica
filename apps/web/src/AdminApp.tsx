@@ -50,17 +50,17 @@ export default function AdminApp() {
     };
 
     // Abrir formulário para EDITAR um produto existente ao clicar nele no catálogo
-    const handleSelectProduct = (product: ProductResponse) => {
-        setEditingProduct({
-            name: product.name,
-            price: product.price,
-            type: product.type,
-            isVegan: product.vegan,
-            quantityDiscount: '', // Preenche com vazio caso não venha da API
-            imageUrl: '',         // Preenche com vazio caso não venha da API
-        });
-        setIsFormOpen(true);
-    };
+    // const handleSelectProduct = (product: ProductResponse) => {
+    //     setEditingProduct({
+    //         name: product.name,
+    //         price: product.price,
+    //         type: product.type,
+    //         isVegan: product.vegan,
+    //         quantityDiscount: '', // Preenche com vazio caso não venha da API
+    //         imageUrl: '',         // Preenche com vazio caso não venha da API
+    //     });
+    //     setIsFormOpen(true);
+    // };
 
     const handleSaveProduct = (data: ProductFormData) => {
         if (editingProduct) {
