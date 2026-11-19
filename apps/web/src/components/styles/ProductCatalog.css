@@ -1,0 +1,79 @@
+.catalog__page > .product__filters {
+    padding-bottom: 15px;
+}
+
+.catalogo-grid {
+    --grid-gap: 20px;
+    --grid-max-columns: 6;
+    --card-min-width: 160px;
+    /* Cap on how wide a card can get on big screens. */
+    --card-max-width: 270px;
+
+    display: grid;
+    /* Cards share the row equally, so they grow in proportion to the central column (see .app
+       in App.css). As many columns as fit (each at least
+       --card-min-width), capped at --grid-max-columns: a column can never be narrower than
+       1/6 of the row, so a 7th never fits. */
+    grid-template-columns: repeat(
+        auto-fill,
+        minmax(
+            min(
+                100%,
+                max(
+                    var(--card-min-width),
+                    (100% - (var(--grid-max-columns) - 1) * var(--grid-gap)) /
+                        var(--grid-max-columns)
+                )
+            ),
+            1fr
+        )
+    );
+    grid-auto-rows: 1fr;
+    gap: var(--grid-gap);
+    /* The grid never gets wider than --grid-max-columns cards at --card-max-width, so cards
+       stop growing there; the grid is then centered. */
+    width: 100%;
+    max-width: calc(
+        var(--grid-max-columns) * var(--card-max-width) + (var(--grid-max-columns) - 1) *
+            var(--grid-gap)
+    );
+    margin: 20px auto 0;
+}
+
+/* Big screens (1440p and up): one more card per row. From ~2240px wide, 7 columns are still
+   at least as wide as the 6 columns at 1080p, so cards never shrink. */
+@media (min-width: 2240px) {
+    .catalogo-grid {
+        --grid-max-columns: 7;
+    }
+}
+
+/* Visualização em lista: uma linha por produto, na largura da barra de pesquisa */
+.catalogo-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    max-width: var(--catalog-column-width);
+    margin: 20px auto 0;
+    padding: 0;
+    list-style: none;
+}
+
+.catalog__empty {
+    margin: 20px 0 0;
+    padding: 32px 16px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    color: var(--color-text-muted);
+    text-align: center;
+}
+
+/* Controles na ponta direita dos filtros: "Mostrar removidos" (admin) e Cards/Lista */
+.catalog__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+}

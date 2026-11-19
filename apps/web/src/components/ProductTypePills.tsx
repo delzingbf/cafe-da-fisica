@@ -1,5 +1,5 @@
 import type { ProductType } from '@cafe-da-fisica/shared';
-import './ProductTypePills.css';
+import './styles/ProductTypePills.css';
 
 type Props = {
     selectedType: ProductType | null;
@@ -11,6 +11,7 @@ const options = [
     { value: 'sweet', label: 'Doces' },
     { value: 'savory', label: 'Salgados' },
     { value: 'coffee', label: 'Cafés' },
+    { value: 'other', label: 'Outros' },
 ] satisfies { value: ProductType | null; label: string }[];
 
 export function ProductTypePills({ selectedType, onTypeChange }: Props) {

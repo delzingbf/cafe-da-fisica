@@ -4,6 +4,7 @@ import request from 'supertest';
 import type { App } from 'supertest/types.js';
 import { API_PREFIX } from '@cafe-da-fisica/shared';
 import { AppModule } from '../src/app.module.js';
+import { configureApp } from '../src/app.setup.js';
 
 describe('App (e2e)', () => {
     let app: INestApplication<App>;
@@ -14,7 +15,7 @@ describe('App (e2e)', () => {
         }).compile();
 
         app = moduleFixture.createNestApplication();
-        app.setGlobalPrefix(API_PREFIX);
+        configureApp(app);
         await app.init();
     });
 

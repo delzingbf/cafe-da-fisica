@@ -19,7 +19,8 @@ export default defineConfig({
             NODE_ENV: 'test',
             DATABASE_URL: TEST_DATABASE_URL,
             // Never send real email from tests, even if apps/api/.env has a key.
-            RESEND_API_KEY: '',
+            SMTP_USER: '',
+            SMTP_PASSWORD: '',
         },
     },
 });

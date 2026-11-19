@@ -1,75 +1,41 @@
-import './CatalogPage.css';
-import type { ProductType } from '@cafe-da-fisica/shared';
-import { ProductCard } from '../components/ProductCard';
+import { useEffect, useState } from 'react';
+import type { ProductResponse } from '@cafe-da-fisica/shared';
+import { ProductCatalog } from '../components/ProductCatalog';
+import { ProductModal } from '../components/ProductModal';
+import { useCart } from '../hooks/useCart';
 import { useProducts } from '../hooks/useProducts';
-import { ProductFilters } from '../components/ProductFilters';
-import { useProductFilters } from '../hooks/useProductFilters';
 
-// DICIONARIO CONVERSÃO PARA PT BR
-const TYPE_LABELS = {
-    sweet: 'Doce',
-    savory: 'Salgado',
-    coffee: 'Café',
-    other: 'Outros',
-} satisfies Record<ProductType, string>;
-
+/** The customer's menu: clicking a product opens its pop-up with "add to cart". */
 export function CatalogPage() {
     const res = useProducts(); // pedindo os dados
-    const products = res.kind === 'ready' ? res.products : [];
+    const [selectedProduct, setSelectedProduct] = useState<ProductResponse | null>(null);
+    const { addToCart, syncWithCatalog } = useCart();
 
-    const {
-        filteredProducts,
-        selectedType,
-        veganOnly,
-        setSelectedType,
-        setVeganOnly,
-        searchInput,
-        setSearchInput,
-        setSearchQuery,
-    } = useProductFilters(products);
+    // Brings the saved cart up to date with the menu (prices, removed or unavailable products).
+    useEffect(() => {
+        if (res.kind === 'ready') syncWithCatalog(res.products);
+    }, [res, syncWithCatalog]);
 
-    if (res.kind === 'loading') {
-        return <p role="status">Carregando os produtos…</p>;
-    }
+    const closeModal = () => setSelectedProduct(null);
 
-    if (res.kind === 'error') {
-        return <p role="alert">Dados dos produtos não carregados.</p>;
-    }
-
-    // READY GARANTIDO
-    if (res.products.length === 0) {
-        return <p>Nenhum produto disponível.</p>;
-    }
-
-    // PAGINA DOS ITENS
     return (
-        <div className="catalog__page">
-            <ProductFilters 
-                selectedType={selectedType}
-                veganOnly={veganOnly}
-                setSelectedType={setSelectedType}
-                setVeganOnly={setVeganOnly}
-                searchInput={searchInput}
-                setSearchInput={setSearchInput}
-                setSearchQuery={setSearchQuery}
-            />
+        <>
+            <ProductCatalog productsState={res} onSelectProduct={setSelectedProduct} />
 
-            <div className="catalogo-grid">
-                {filteredProducts.length === 0 && (
-                    <p className="catalog__empty" role="status">
-                        Nenhum item correspondente encontrado. Tente outra busca ou altere os filtros.
-                    </p>
-                )}
-                {filteredProducts.map((product) => (
-                    <ProductCard
-                        key={product.id}
-                        name={product.name}
-                        price={product.price}
-                        isVegan={product.vegan}
-                        type={TYPE_LABELS[product.type]}
-                    />
-                ))}
-            </div>
-        </div>
+            {selectedProduct && (
+                <ProductModal product={selectedProduct} onClose={closeModal}>
+                    <button
+                        className="botao-adicionar"
+                        disabled={!selectedProduct.available}
+                        onClick={() => {
+                            addToCart(selectedProduct);
+                            closeModal();
+                        }}
+                    >
+                        {selectedProduct.available ? 'Adicionar no carrinho' : 'Indisponível'}
+                    </button>
+                </ProductModal>
+            )}
+        </>
     );
 }

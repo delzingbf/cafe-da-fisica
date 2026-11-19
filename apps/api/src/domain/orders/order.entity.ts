@@ -54,6 +54,10 @@ export class Order {
     @Column({ type: 'text', name: 'delivery_location', nullable: true })
     deliveryLocation: string | null;
 
+    // When the customer wants to receive or pick up the order.
+    @Column({ type: 'timestamptz', name: 'scheduled_at' })
+    scheduledAt: Date;
+
     @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
     createdAt: Date;
 

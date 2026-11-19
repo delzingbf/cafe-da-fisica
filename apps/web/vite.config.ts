@@ -15,6 +15,9 @@ export default defineConfig({
     },
     test: {
         environment: 'jsdom',
+        // Node 25+ ships its own global `localStorage` (undefined without --localstorage-file),
+        // which shadows jsdom's. Turning it off leaves jsdom's in place; harmless on Node 24.
+        execArgv: ['--no-experimental-webstorage'],
         include: ['src/**/*.test.{ts,tsx}'],
     },
 });
