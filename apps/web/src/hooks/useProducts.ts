@@ -2,14 +2,17 @@ import { useEffect, useState } from 'react';
 import type { ProductResponse } from '@cafe-da-fisica/shared';
 import { api } from '../api/client';
 
-type State =
+export type ProductsState =
     | { kind: 'loading' }
     | { kind: 'ready'; products: ProductResponse[] }
     | { kind: 'error'; message: string };
 
-/** Fetches the menu (`GET /api/products`) once on mount. */
-export function useProducts(): State {
-    const [state, setState] = useState<State>({ kind: 'loading' });
+/**
+ * Fetches the menu (`GET /api/products`) on mount, and again whenever `version` changes (e.g. after
+ * the admin removes a product). While refetching, the previous list stays on screen.
+ */
+export function useProducts(version = 0): ProductsState {
+    const [state, setState] = useState<ProductsState>({ kind: 'loading' });
 
     useEffect(() => {
         const controller = new AbortController();
@@ -25,7 +28,7 @@ export function useProducts(): State {
             });
 
         return () => controller.abort();
-    }, []);
+    }, [version]);
 
     return state;
 }

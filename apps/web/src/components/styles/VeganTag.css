@@ -1,0 +1,18 @@
+/* Pílula só com contorno: o fundo é o do card/modal, então o verde muda com o tema */
+.tag-vegano {
+    --vegan-green: #2e7d32;
+    background: transparent;
+    border: 1px solid var(--vegan-green);
+    color: var(--vegan-green);
+    padding: 1px 8px;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    font-weight: bold;
+}
+
+@media (prefers-color-scheme: dark) {
+    .tag-vegano {
+        --vegan-green: #81c784;
+    }
+}

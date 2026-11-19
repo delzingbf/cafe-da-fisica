@@ -14,3 +14,72 @@ export interface OrderResponse {
     status: OrderStatus;
     total: number;
 }
+
+export interface CreateOrderItemRequest {
+    productId: number;
+    quantity: number;
+}
+
+/** Body of `POST /orders`. */
+export interface CreateOrderRequest {
+    customerName: string;
+    customerEmail: string;
+    paymentOption: OrderPaymentOption;
+    deliveryMethod: OrderDeliveryMethod;
+    /** Required when `deliveryMethod` is `'delivery'`, ignored otherwise. */
+    deliveryLocation?: string;
+    /** When the customer wants the order, as an ISO 8601 string. Must be in the future. */
+    scheduledAt: string;
+    items: CreateOrderItemRequest[];
+}
+
+/** Body of the 400 response when some ordered products can no longer be ordered. */
+export interface ProductsUnavailableError {
+    statusCode: 400;
+    message: string;
+    unavailableProductIds: number[];
+}
+
+// UC6 - Gerar Relatório. Dates are ISO 8601 strings (JSON has no Date type).
+
+/** One order of the history, with its lines. `total` is the sum of `unitPrice * quantity`. */
+export interface OrderReportOrder {
+    id: number;
+    customerName: string;
+    status: OrderStatus;
+    paymentOption: OrderPaymentOption;
+    deliveryMethod: OrderDeliveryMethod;
+    createdAt: string;
+    total: number;
+    items: Array<{
+        productId: number;
+        productName: string;
+        quantity: number;
+        unitPrice: number;
+    }>;
+}
+
+/** A product ordered in the last week: units sold and the money they brought in. */
+export interface OrderReportProduct {
+    productId: number;
+    productName: string;
+    quantity: number;
+    revenue: number;
+}
+
+export interface OrderReportResponse {
+    /** Every order of the last 4 weeks (28 days), newest first, cancelled ones included. */
+    history: {
+        from: string;
+        to: string;
+        orders: OrderReportOrder[];
+    };
+    /** Last 7 days, cancelled orders left out of the products and of the total. */
+    lastWeek: {
+        from: string;
+        to: string;
+        ordersCount: number;
+        products: OrderReportProduct[];
+        totalRevenue: number;
+    };
+}

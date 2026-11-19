@@ -5,6 +5,8 @@ import { DatabaseModule } from './infrastructure/database/database.module.js';
 import { HealthModule } from './infrastructure/health/health.module.js';
 import { ProductsModule } from './domain/products/products.module.js';
 import { OrdersModule } from './domain/orders/orders.module.js';
+import { AuthModule } from './domain/auth/auth.module.js';
+import { SettingsModule } from './domain/settings/settings.module.js';
 
 @Module({
     imports: [
@@ -13,6 +15,8 @@ import { OrdersModule } from './domain/orders/orders.module.js';
         HealthModule,
         ProductsModule,
         OrdersModule,
+        AuthModule,
+        SettingsModule,
     ],
 })
 export class AppModule {}
